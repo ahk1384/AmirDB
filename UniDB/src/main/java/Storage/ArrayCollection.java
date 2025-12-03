@@ -44,10 +44,13 @@ public class ArrayCollection implements Collection {
         return students.size();
     }
 
-    public List<Student> filterByName(String filed , String value) {
+    public List<Student> filter(String field, String value) {
         List<Student> result = new ArrayList<>();
         for (Student student : students) {
-            if (filed.equals("name") && student.getName().equals(value)) {
+            if (field.equals("name") && student.getName().equals(value)) {
+                result.add(student);
+            }
+            if (field.equals("gpa") && student.getGpa() == Double.parseDouble(value)) {
                 result.add(student);
             }
         }
