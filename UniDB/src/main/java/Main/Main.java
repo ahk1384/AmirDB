@@ -1,0 +1,23 @@
+package Main;
+
+import Engine.ExecutionEngine;
+import Parser.QueryParser;
+
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        ExecutionEngine engine = new ExecutionEngine();
+
+        System.out.println("UniDB Shell (Java)\nType 'exit' to quit.");
+
+        while (true) {
+            System.out.print("unidb> ");
+            String input = scanner.nextLine();
+            if (input.equals("exit")) break;
+
+            QueryParser.parseAndExecute(input, engine);
+        }
+    }
+}
