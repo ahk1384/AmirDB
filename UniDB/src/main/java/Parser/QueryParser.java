@@ -11,6 +11,10 @@ public class QueryParser {
         if (tokens.length < 2) return false;
         String cmd = "";
         Command command = null;
+        if (tokens.length == 4){
+            tokens[2] = tokens[2]+"."+tokens[3];
+            tokens = new String[]{tokens[0], tokens[1], tokens[2]};
+        }
         if (tokens.length == 3) {
              cmd = tokens[2].split("\\(")[0];
             command = new Command(cmd, tokens);

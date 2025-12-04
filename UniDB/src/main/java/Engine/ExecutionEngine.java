@@ -2,6 +2,7 @@ package Engine;
 
 import Storage.ArrayCollection;
 import Storage.Collection;
+import Storage.FileReader;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -54,7 +55,8 @@ public class ExecutionEngine {
         }else if (command.getCommandType().equals("findAll")) {
             System.out.println("Executing findAll...");
         } else if (command.getCommandType().equals("import")) {
-            System.out.println("Importing data...");
+            FileReader.loadFile(command.getArgs()[2].substring(command.getArgs()[2].indexOf('(') + 2, command.getArgs()[2].lastIndexOf(')')-1));
+            System.out.println("Data Imported from file...");
         }else if (command.getCommandType().equals("filter")){
             System.out.println("Filtering data...");
         } else if (command.getCommandType().equals("count")) {

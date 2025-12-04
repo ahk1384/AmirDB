@@ -1,8 +1,11 @@
 package Main;
 
 import Engine.ExecutionEngine;
+import Models.Student;
 import Parser.QueryParser;
+import Storage.FileReader;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class Main {
@@ -11,12 +14,10 @@ public class Main {
         ExecutionEngine engine = new ExecutionEngine();
 
         System.out.println("UniDB Shell (Java)\nType 'exit' to quit.");
-
         while (true) {
             System.out.print("unidb> ");
             String input = scanner.nextLine();
             if (input.equals("exit")) break;
-
             QueryParser.parseAndExecute(input, engine);
         }
     }
