@@ -63,12 +63,6 @@ public class ExecutionEngine {
             System.out.println("Calculating sum...");
         } else if (command.getCommandType().equals("average")) {
             System.out.println("Calculating average...");
-        } else if (command.getCommandType().equals("beginTransaction")) {
-            System.out.println("Beginning transaction...");
-        } else if (command.getCommandType().equals("rollback")) {
-            System.out.println("Rolling back transaction...");
-        } else if (command.getCommandType().equals("commit")) {
-            System.out.println("Committing transaction...");
         }else if (command.getCommandType().equals("start")) {
             if (currentMode == ProgramMode.BATCH) {
                 System.out.println("Already in batch mode.");
@@ -78,8 +72,18 @@ public class ExecutionEngine {
                 System.out.println("Switched to batch mode.");
             }
         } else if (command.getCommandType().equals("execute")) {
-            System.out.println("Executing batch...");
-        } else if (command.getCommandType().equals("beingTransaction")) {
+            if (currentMode != ProgramMode.BATCH) {
+                System.out.println("Not in batch mode.");
+            } else {
+                while (!batchQueue.isEmpty()) {
+                    Command cmd = batchQueue.poll();
+                    executeCommandDirectly(cmd);
+                }
+                currentMode = ProgramMode.NORMAL;
+                batchQueue = null;
+                System.out.println("Batch execution completed.");
+            }
+        } else if (command.getCommandType().equals("beginTransaction")) {
             if (currentMode == ProgramMode.TRANSACTION) {
                 System.out.println("Already in transaction mode.");
             } else {
@@ -91,6 +95,10 @@ public class ExecutionEngine {
             if (currentMode != ProgramMode.TRANSACTION) {
                 System.out.println("Not in transaction mode.");
             } else {
+                while (!transactionStack.isEmpty()) {
+                    Command cmd = transactionStack.pop();
+                    executeCommandDirectly(cmd);
+                }
                 currentMode = ProgramMode.NORMAL;
                 transactionStack = null;
                 System.out.println("Transaction committed.");
@@ -99,7 +107,7 @@ public class ExecutionEngine {
             if (currentMode != ProgramMode.TRANSACTION) {
                 System.out.println("Not in transaction mode.");
             } else {
-                executeCommandDirectly(transactionStack.pop());
+                transactionStack.pop();
                 currentMode = ProgramMode.NORMAL;
                 System.out.println("Transaction rolled back.");
             }
