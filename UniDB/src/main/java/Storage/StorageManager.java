@@ -1,6 +1,9 @@
 package Storage;
 
 import Engine.Command;
+import Models.Student;
+
+import java.util.List;
 
 public class StorageManager {
     private static StorageManager instance = null;
@@ -41,11 +44,17 @@ public class StorageManager {
         }
         return true;
     }
+    public int count(){
+        return arrayCollection.count();
+    }
     public double sumOfField(String fieldName) {
         return arrayCollection.sumOfField(fieldName);
     }
     public double averageOfField(String fieldName) {
         return arrayCollection.averageOfField(fieldName);
+    }
+    public List<Student> filterByField(String fieldName, String value) {
+        return arrayCollection.filter(fieldName, value);
     }
 
 }

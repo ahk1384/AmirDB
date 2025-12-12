@@ -9,7 +9,7 @@ import java.util.List;
 public class FileReader {
     private static String readFile(String filePath) {
         StringBuilder content = new StringBuilder();
-        try (BufferedReader br = new BufferedReader(new java.io.FileReader(filePath))) {
+        try (BufferedReader br = new BufferedReader(new java.io.FileReader("src/main/java/"+filePath))) {
             String line;
             while ((line = br.readLine()) != null) {
                 content.append(line).append(System.lineSeparator());

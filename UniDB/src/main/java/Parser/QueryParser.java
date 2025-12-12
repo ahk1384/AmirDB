@@ -33,11 +33,17 @@ public class QueryParser {
             String [] commandArgs = new String[]{command.getArgs()[0],command.getArgs()[1],command.getArgs()[2],String.valueOf(id), name, String.valueOf(gpa)};
             command.setArgs(commandArgs);
         }
-        else if (cmd.equals("deleteOne") || cmd.equals("findByID")){
+        else if (cmd.equals("deleteOne")){
             String arg = command.getArgs()[2].substring(command.getArgs()[2].indexOf('{') + 1,
                     command.getArgs()[2].lastIndexOf('}')).trim();
             int id = Integer.parseInt(arg.split(":")[1].trim());
             String [] commandArgs = new String[]{command.getArgs()[0],command.getArgs()[1],command.getArgs()[2], String.valueOf(id)};
+            command.setArgs(commandArgs);
+        }else if (cmd.equals("findByID")){
+            String arg = command.getArgs()[2].substring(command.getArgs()[2].indexOf('(') + 1,
+                    command.getArgs()[2].lastIndexOf(')')).trim();
+
+            String [] commandArgs = new String[]{command.getArgs()[0],command.getArgs()[1],command.getArgs()[2], arg};
             command.setArgs(commandArgs);
         }
         return engine.executeCommand(command);
