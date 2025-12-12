@@ -15,7 +15,7 @@ public class Main {
 
         System.out.println("UniDB Shell (Java)\nType 'exit' to quit.");
         while (true) {
-            System.out.print("unidb> ");
+            System.out.print("UniDB> ");
             String input = scanner.nextLine();
             if (input.equals("exit")) break;
             QueryParser.parseAndExecute(input, engine);

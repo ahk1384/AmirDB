@@ -1,8 +1,10 @@
 package Engine;
 
+import Models.Student;
 import Storage.ArrayCollection;
 import Storage.Collection;
 import Storage.FileReader;
+import Storage.StorageManager;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -14,48 +16,57 @@ public class ExecutionEngine {
     TransactionStack transactionStack;
     Queue<Command> batchQueue;
     private ProgramMode currentMode;
-
+    private StorageManager sm = StorageManager.getInstance();
     public ExecutionEngine() {
         this.currentCollection = new ArrayCollection();
         this.currentMode = ProgramMode.NORMAL;
     }
     public boolean executeCommandDirectly(Command command) {
         if (command.getCommandType().equals("insertOne")) {
-            System.out.println("Executing insertOne...");
+            if(sm.insertOne(new Student(Integer.parseInt(command.getArgs()[3]),command.getArgs()[4],Double.parseDouble(command.getArgs()[5])))){
+                System.out.println("Insert successful.");
+            }else{
+                System.out.println("Insert failed.");
+            }
         }else if (command.getCommandType().equals("deleteOne")) {
-            System.out.println("Executing deleteOne...");
+            if (sm.deleteOne(Integer.parseInt(command.getArgs()[3]))) {
+                System.out.println("Delete successful.");
+            } else {
+                System.out.println("Delete failed.");
+            }
         }
         return true;
     }
     public boolean executeCommand(Command command) {
         if (command.getCommandType().equals("insertOne")) {
             if (currentMode == ProgramMode.TRANSACTION) {
+                command.setCommandType("deleteOne");
                 transactionStack.push(command);
-                System.out.println("Command queued in transaction.");
+//                System.out.println("Command queued in transaction.");
                 return true;
             } else if (currentMode == ProgramMode.BATCH) {
                 batchQueue.add(command);
                 System.out.println("Command added to batch queue.");
                 return true;
             }
-            System.out.println("Executing insertOne...");
+            executeCommandDirectly(command);
         }else if (command.getCommandType().equals("deleteOne")) {
             if (currentMode == ProgramMode.TRANSACTION) {
+                command.setCommandType("insertOne");
                 transactionStack.push(command);
-                System.out.println("Command queued in transaction.");
+//                System.out.println("Command queued in transaction.");
                 return true;
             } else if (currentMode == ProgramMode.BATCH) {
                 batchQueue.add(command);
                 System.out.println("Command added to batch queue.");
                 return true;
             }
-            System.out.println("Executing deleteOne...");
+            executeCommandDirectly(command);
         }else if (command.getCommandType().equals("findByID")) {
             System.out.println("Executing findByID...");
         }else if (command.getCommandType().equals("findAll")) {
             System.out.println("Executing findAll...");
         } else if (command.getCommandType().equals("import")) {
-            FileReader.loadFile(command.getArgs()[2].substring(command.getArgs()[2].indexOf('(') + 2, command.getArgs()[2].lastIndexOf(')')-1));
             System.out.println("Data Imported from file...");
         }else if (command.getCommandType().equals("filter")){
             System.out.println("Filtering data...");
@@ -97,10 +108,7 @@ public class ExecutionEngine {
             if (currentMode != ProgramMode.TRANSACTION) {
                 System.out.println("Not in transaction mode.");
             } else {
-                while (!transactionStack.isEmpty()) {
-                    Command cmd = transactionStack.pop();
-                    executeCommandDirectly(cmd);
-                }
+
                 currentMode = ProgramMode.NORMAL;
                 transactionStack = null;
                 System.out.println("Transaction committed.");
@@ -109,7 +117,10 @@ public class ExecutionEngine {
             if (currentMode != ProgramMode.TRANSACTION) {
                 System.out.println("Not in transaction mode.");
             } else {
-                transactionStack.pop();
+                while (!transactionStack.isEmpty()) {
+                    Command cmd = transactionStack.pop();
+                    executeCommandDirectly(cmd);
+                }
                 currentMode = ProgramMode.NORMAL;
                 System.out.println("Transaction rolled back.");
             }

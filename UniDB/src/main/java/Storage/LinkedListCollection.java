@@ -46,7 +46,6 @@ public class LinkedListCollection implements Collection {
             }
             current = current.next;
         }
-
         return false;
     }
     public Student findByID(int id) {

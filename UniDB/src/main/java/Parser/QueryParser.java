@@ -2,6 +2,7 @@ package Parser;
 
 import Engine.Command;
 import Engine.ExecutionEngine;
+import Models.Student;
 
 public class QueryParser {
     public static boolean parseAndExecute(String input, ExecutionEngine engine) {
@@ -23,6 +24,22 @@ public class QueryParser {
             command = new Command(cmd, tokens);
         }
         if (command == null) return false;
+        if(cmd.equals("insertOne")){
+            String[] args = command.getArgs()[2].substring(command.getArgs()[2].indexOf('{') + 1,
+                    command.getArgs()[2].lastIndexOf('}')).split(",");
+            int id = Integer.parseInt(args[0].split(":")[1].trim());
+            String name = args[1].split(":")[1].trim().replaceAll("\"", "");
+            double gpa = Double.parseDouble(args[2].split(":")[1].trim());
+            String [] commandArgs = new String[]{command.getArgs()[0],command.getArgs()[1],command.getArgs()[2],String.valueOf(id), name, String.valueOf(gpa)};
+            command.setArgs(commandArgs);
+        }
+        else if (cmd.equals("deleteOne") || cmd.equals("findByID")){
+            String arg = command.getArgs()[2].substring(command.getArgs()[2].indexOf('{') + 1,
+                    command.getArgs()[2].lastIndexOf('}')).trim();
+            int id = Integer.parseInt(arg.split(":")[1].trim());
+            String [] commandArgs = new String[]{command.getArgs()[0],command.getArgs()[1],command.getArgs()[2], String.valueOf(id)};
+            command.setArgs(commandArgs);
+        }
         return engine.executeCommand(command);
     }
 }

@@ -6,7 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ArrayCollection implements Collection {
-    ArrayList<Student> students = new ArrayList<>();
+    ArrayList<Student> students ;
+    public ArrayCollection() {
+        students = new ArrayList<>();
+    }
     public boolean insertOne(Student student) {
         return students.add(student);
     }

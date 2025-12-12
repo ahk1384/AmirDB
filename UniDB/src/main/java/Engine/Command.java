@@ -8,6 +8,14 @@ public class Command {
         this.args = args;
     }
 
+    public void setCommandType(String commandType) {
+        this.commandType = commandType;
+    }
+
+    public void setArgs(String[] args) {
+        this.args = args;
+    }
+
     public String getCommandType() {
         return commandType;
     }
