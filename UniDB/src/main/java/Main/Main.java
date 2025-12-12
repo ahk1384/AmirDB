@@ -20,7 +20,8 @@ public class Main {
             if (input.equals("exit")) {
                 QueryParser.parseAndExecute("db.s.save()", engine);
                 System.out.println("Exiting UniDB Shell. Goodbye!");
-                break;}
+                break;
+            }
             QueryParser.parseAndExecute(input, engine);
         }
     }
