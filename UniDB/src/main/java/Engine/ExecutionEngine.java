@@ -12,24 +12,26 @@ import java.util.Queue;
 import java.util.Stack;
 
 public class ExecutionEngine {
-    private Collection currentCollection;
+
     TransactionStack transactionStack;
     Queue<Command> batchQueue;
     private ProgramMode currentMode;
     private StorageManager sm = StorageManager.getInstance();
+
     public ExecutionEngine() {
-        this.currentCollection = new ArrayCollection();
+
         this.currentMode = ProgramMode.NORMAL;
     }
     public boolean executeCommandDirectly(Command command) {
+
         if (command.getCommandType().equals("insertOne")) {
-            if(sm.insertOne(new Student(Integer.parseInt(command.getArgs()[3]),command.getArgs()[4],Double.parseDouble(command.getArgs()[5])))){
+            if(Executers.insertOne(new Student(Integer.parseInt(command.getArgs()[3]),command.getArgs()[4],Double.parseDouble(command.getArgs()[5])))){
                 System.out.println("Insert successful.");
             }else{
                 System.out.println("Insert failed.");
             }
         }else if (command.getCommandType().equals("deleteOne")) {
-            if (sm.deleteOne(Integer.parseInt(command.getArgs()[3]))) {
+            if (Executers.deleteOne(Integer.parseInt(command.getArgs()[3]))) {
                 System.out.println("Delete successful.");
             } else {
                 System.out.println("Delete failed.");
@@ -37,7 +39,8 @@ public class ExecutionEngine {
         }
         return true;
     }
-    public boolean executeCommand(Command command) {
+    public boolean executeCommand(Command command)  {
+        try{
         if (command.getCommandType().equals("insertOne")) {
             if (currentMode == ProgramMode.TRANSACTION) {
                 executeCommandDirectly(command);
@@ -56,7 +59,29 @@ public class ExecutionEngine {
                 return true;
             }
             executeCommandDirectly(command);
-        }else if (command.getCommandType().equals("deleteOne")) {
+        }else if (command.getCommandType().equals("save")){
+            System.out.println("Saving data...");
+            if(Executers.saveData()){
+                System.out.println("Data saved successfully.");
+            } else {
+                System.out.println("Data saving failed.");
+            }
+        }else if (command.getCommandType().equals("saveAs")){
+            System.out.println("Saving data to " + command.getArgs()[2] + " ...");
+            if(Executers.saveData(command.getArgs()[2])){
+                System.out.println("Data saved successfully.");
+            } else {
+                System.out.println("Data saving failed.");
+            }
+        }else if (command.getCommandType().equals("load-saved")){
+            System.out.println("Loading saved data from ");
+            if(Executers.loadData()){
+                System.out.println("Data loaded successfully.");
+            } else {
+                System.out.println("Data loading failed.");
+            }
+        }
+        else if (command.getCommandType().equals("deleteOne")) {
             if (currentMode == ProgramMode.TRANSACTION) {
                 Student s = sm.findByID(Integer.parseInt(command.getArgs()[3]));
                 if (s != null) {
@@ -80,42 +105,46 @@ public class ExecutionEngine {
             }
             executeCommandDirectly(command);
         }else if (command.getCommandType().equals("findByID")) {
-            Student st = sm.findByID(Integer.parseInt(command.getArgs()[3]));
+            Student st = Executers.findByID(Integer.parseInt(command.getArgs()[3]));
             if (st != null) {
                 System.out.println("Found Student: ID=" + st.getId() + ", Name=" + st.getName() + ", Gpa=" + st.getGpa());
             } else {
                 System.out.println("Student not found.");
             }
         }else if (command.getCommandType().equals("findAll")) {
-            Student[] students = sm.findAll();
+            Student[] students = Executers.findAll();
             System.out.println("All Students:");
             for (Student st : students) {
                 System.out.println("ID=" + st.getId() + ", Name=" + st.getName() + ", Gpa=" + st.getGpa());
             }
             return true;
         } else if (command.getCommandType().equals("import")) {
-            sm.importData(command.getArgs()[2].substring(command.getArgs()[2].indexOf('(') + 2,
-                    command.getArgs()[2].lastIndexOf(')')-1).trim());
-            System.out.println("Data imported.");
+            if(Executers.importData(command.getArgs()[2].substring(command.getArgs()[2].indexOf('(') + 2,
+                    command.getArgs()[2].lastIndexOf(')')-1).trim())){
+                System.out.println("Import successful.");
+            }else{
+                System.out.println("Import failed.");
+            }
+
         }else if (command.getCommandType().equals("filter")){
             String[] conditions = command.getArgs()[2].split(",");
             String field = conditions[0].substring(conditions[0].indexOf('(') +2, conditions[0].lastIndexOf('"')).trim();
             String value = conditions[1].substring(1, conditions[1].lastIndexOf(')')-1).trim();
             System.out.println("Filtering by " + field + " = " + value);
-            for (Student st : sm.filterByField(field, value)) {
+            for (Student st : Executers.filterByField(field, value)) {
                 System.out.println("ID=" + st.getId() + ", Name=" + st.getName() + ", Gpa=" + st.getGpa());
             }
             return true;
         } else if (command.getCommandType().equals("count")) {
-            System.out.println("Total count: " + sm.count());
+            System.out.println("Total count: " + Executers.count());
         } else if (command.getCommandType().equals("sum")) {
             System.out.println("Calculating sum...");
-            double sum = sm.sumOfField(command.getArgs()[2].substring(command.getArgs()[2].indexOf('(') + 2,
+            double sum = Executers.sumOfField(command.getArgs()[2].substring(command.getArgs()[2].indexOf('(') + 2,
                     command.getArgs()[2].lastIndexOf(')')-1).trim());
             System.out.println("Sum: " + sum);
         } else if (command.getCommandType().equals("average")) {
             System.out.println("Calculating average...");
-            double avg = sm.averageOfField(command.getArgs()[2].substring(command.getArgs()[2].indexOf('(') + 2,
+            double avg = Executers.averageOfField(command.getArgs()[2].substring(command.getArgs()[2].indexOf('(') + 2,
                     command.getArgs()[2].lastIndexOf(')')-1).trim());
             System.out.println("Average: " + avg);
         }else if (command.getCommandType().equals("start")) {
@@ -167,8 +196,13 @@ public class ExecutionEngine {
             }
         }
         else {
+            System.out.println("Unknown command: " + command.getCommandType());
             return false;
         }
         return true;
+        }catch (Exception e){
+            System.out.println("Error Occured" );
+            return false;
+        }
     }
 }

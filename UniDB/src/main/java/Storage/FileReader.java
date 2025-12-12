@@ -15,7 +15,7 @@ public class FileReader {
                 content.append(line).append(System.lineSeparator());
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Error reading file: " + e.getMessage());
         }
         return content.toString();
     }

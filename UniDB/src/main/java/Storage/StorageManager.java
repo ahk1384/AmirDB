@@ -37,7 +37,14 @@ public class StorageManager {
         return arrayCollection.findAll().toArray(new Models.Student[0]);
     }
     public boolean importData(String filePath) {
-        for (Models.Student student : FileReader.loadFile(filePath)) {
+        if (filePath == null || filePath.isEmpty()) {
+            return false;
+        }
+        List<Student> students = FileReader.loadFile(filePath);
+        if (students.isEmpty()) {
+            return false;
+        }
+        for (Models.Student student : students) {
             if (!insertOne(student)) {
                 return false;
             }
