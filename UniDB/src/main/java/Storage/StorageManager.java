@@ -36,6 +36,29 @@ public class StorageManager {
     public Models.Student[] findAll() {
         return arrayCollection.findAll().toArray(new Models.Student[0]);
     }
+    public List<Command> importDataTransaction(String filePath) {
+        List<Command> commands = new java.util.ArrayList<>();
+        if (filePath == null || filePath.isEmpty()) {
+            return null;
+        }
+        List<Student> students = FileReader.loadFile(filePath);
+        if (students.isEmpty()) {
+            return null;
+        }
+        for (Models.Student student : students) {
+            if (!insertOne(student)) {
+                return null;
+            } else {
+                commands.add(new Command("db", "s", "deleteOne", new String[]{
+                        "db",
+                        "s",
+                        "deleteOne",
+                        String.valueOf(student.getId())
+                }));
+            }
+        }
+        return commands;
+    }
     public boolean importData(String filePath) {
         if (filePath == null || filePath.isEmpty()) {
             return false;

@@ -5,10 +5,11 @@ import Storage.StorageManager;
 
 import java.util.List;
 
-public class ImportDataCommand {
+public class ImportDataWithTransactionCommand {
     private static final StorageManager sm = StorageManager.getInstance();
 
-    public static boolean execute(String filePath) {
-        return sm.importData(filePath);
+    public static List<Command> execute(String filePath) {
+        return sm.importDataTransaction(filePath);
     }
 }
+

@@ -11,6 +11,7 @@ public class LinkedListCollection implements Collection {
         Node next;
         Node prev;
     }
+
     private Node head;
     private Node tail;
 
@@ -18,6 +19,9 @@ public class LinkedListCollection implements Collection {
     public boolean insertOne(Student student) {
         Node newNode = new Node();
         newNode.data = student;
+        if (IsExisting(student.getId())) {
+            return false;
+        }
         if (head == null) {
             head = newNode;
             tail = newNode;
@@ -28,6 +32,15 @@ public class LinkedListCollection implements Collection {
         tail = newNode;
         return true;
     }
+
+    private boolean IsExisting(int id) {
+        if (findByID(id) != null) {
+            return true;
+        }
+        return false;
+    }
+
+
     public boolean deleteOne(int id) {
         Node current = head;
         while (current != null) {
@@ -48,6 +61,7 @@ public class LinkedListCollection implements Collection {
         }
         return false;
     }
+
     public Student findByID(int id) {
         Node current = head;
         while (current != null) {
@@ -58,6 +72,7 @@ public class LinkedListCollection implements Collection {
         }
         return null;
     }
+
     public List<Student> findAll() {
         List<Student> students = new ArrayList<>();
         Node current = head;
