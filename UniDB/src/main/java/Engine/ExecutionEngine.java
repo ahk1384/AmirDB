@@ -53,9 +53,16 @@ public class ExecutionEngine {
     public boolean executeCommandDirectly(Command command) {
         CommandHandler handler = commandHandlers.get(command.getCommandType());
         if (handler != null) {
-            return handler.handle(command);
+            try {
+                return handler.handle(command);
+            } catch (Exception e) {
+                System.out.println("Command execution failed: " + e.getMessage());
+                return false;
+            }
+        } else {
+            System.out.println("Unknown command.");
+            return false;
         }
-        return true;
     }
 
     public boolean handleInsertOneDirect(Command command) {
