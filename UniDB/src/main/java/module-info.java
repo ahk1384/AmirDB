@@ -6,4 +6,7 @@ module com.example.unidb {
 
     opens com.example.unidb to javafx.fxml;
     exports com.example.unidb;
-}
+    exports Engine;
+    exports Engine.Commands;
+    exports Models;
+    exports Storage;}

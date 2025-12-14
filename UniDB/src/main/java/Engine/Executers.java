@@ -1,63 +1,65 @@
 package Engine;
 
+import Engine.Commands.*;
 import Models.Student;
-import Storage.FileWriter;
-import Storage.StorageManager;
 
-import java.security.spec.ECField;
-import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Executers class - Acts as a facade for executing commands.
+ * Each operation is delegated to its corresponding command class.
+ */
 public class Executers {
-    private static Executers instance = null;
-    public static Executers getInstance() {
-        if (instance == null) {
-            instance = new Executers();
-        }
-        return instance;
-    }
-    private Executers() {
-    }
-    private static StorageManager sm = StorageManager.getInstance();
+
     public static boolean insertOne(Student student) {
-        return sm.insertOne(student);
+        return InsertOneCommand.execute(student);
     }
+
     public static boolean deleteOne(int id) {
-        return sm.deleteOne(id);
+        return DeleteOneCommand.execute(id);
     }
+
     public static Student findByID(int id) {
-        return sm.findByID(id);
+        return FindByIdCommand.execute(id);
     }
+
     public static Student[] findAll() {
-        return sm.findAll();
+        return FindAllCommand.execute();
     }
+
     public static double sumOfField(String fieldName) {
-        return sm.sumOfField(fieldName);
+        return SumOfFieldCommand.execute(fieldName);
     }
+
     public static double averageOfField(String fieldName) {
-        return sm.averageOfField(fieldName);
+        return AverageOfFieldCommand.execute(fieldName);
     }
+
     public static List<Student> filterByField(String fieldName, Object value) {
-        return sm.filterByField(fieldName, value.toString());
+        return FilterByFieldCommand.execute(fieldName, value);
     }
+
     public static boolean importData(String filePath) {
-        return sm.importData(filePath);
-    }
-    public static int count(){
-        return sm.count();
-    }
-    public static boolean saveData(){
-        return FileWriter.saveFile(Arrays.stream(sm.findAll()).toList());
-    }
-    public static boolean loadData(){
-        return sm.importData("Storage/data.csv");
-    }
-    public static boolean loadData(String filePath){
-        return sm.importData(filePath);
+        return ImportDataCommand.execute(filePath);
     }
 
-    public static boolean saveData(String filePath){
-        return FileWriter.saveFile(filePath,Arrays.stream(sm.findAll()).toList());
+    public static int count() {
+        return CountCommand.execute();
     }
 
+    public static boolean saveData() {
+        return SaveDataCommand.execute();
+    }
+
+    public static boolean loadData() {
+        return LoadDataCommand.execute();
+    }
+
+    public static boolean loadData(String filePath) {
+        return LoadDataCommand.execute(filePath);
+    }
+
+    public static boolean saveData(String filePath) {
+        return SaveDataCommand.execute(filePath);
+    }
 }

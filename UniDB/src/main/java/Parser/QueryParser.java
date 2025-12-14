@@ -1,4 +1,3 @@
-// java
 package Parser;
 
 import Engine.Command;
@@ -8,79 +7,100 @@ import java.util.*;
 
 public class QueryParser {
 
+    // main entry: returns engine.executeCommand(...) result
     public static boolean parseAndExecute(String input, ExecutionEngine engine) {
-        if (input == null) return false;
+        if (input == null || engine == null) return false;
         input = input.trim();
+        if (input.isEmpty()) return engine.executeCommand(makeErrorCommand("empty input"));
+
         try {
             int idxOpen = input.indexOf('(');
             int idxClose = input.lastIndexOf(')');
-            if (idxOpen < 0 || idxClose < 0 || idxClose < idxOpen) return false;
+            if (idxOpen < 0 || idxClose < 0 || idxClose < idxOpen) {
+                return engine.executeCommand(makeErrorCommand("missing parentheses"));
+            }
 
-            // find dots: first dot and the dot immediately before the method name (the last dot before '(')
             int firstDot = input.indexOf('.');
             int secondDot = input.lastIndexOf('.', idxOpen);
-            if (firstDot < 0 || secondDot < 0 || secondDot == firstDot) return false;
+            if (firstDot < 0 || secondDot < 0 || secondDot == firstDot) {
+                return engine.executeCommand(makeErrorCommand("expected format db.collection.method(...)"));
+            }
 
             String db = input.substring(0, firstDot).trim();
             String collection = input.substring(firstDot + 1, secondDot).trim();
-            String methodAndArgs = input.substring(secondDot + 1).trim(); // e.g. insertOne({...})
-            String method = methodAndArgs.substring(0, methodAndArgs.indexOf('(')).trim();
-
+            String method = input.substring(secondDot + 1, idxOpen).trim();
             String argsInside = input.substring(idxOpen + 1, idxClose).trim();
 
-            // base command
-            Command command = new Command(method, new String[]{db, collection, methodAndArgs});
+            if (db.isEmpty() || collection.isEmpty() || method.isEmpty()) {
+                return engine.executeCommand(makeErrorCommand("empty db/collection/method"));
+            }
 
-            // handle common methods
+            Command command = new Command(db, collection, method, new String[]{db, collection, method + "(" + argsInside + ")"});
+
             switch (method) {
-                case "insertOne":
-                    // expect a single JSON-like object
+                case "insertOne": {
                     Map<String, String> obj = parseObject(argsInside);
-                    if (obj == null) return false;
-                    // tolerant key lookup
-                    Integer id = parseIntFromMap(obj, "_id");
+                    if (obj == null) return engine.executeCommand(makeErrorCommand(command, "invalid object for insertOne"));
+                    Integer id = parseIntFromMap(obj, "id");
+                    if (id == null) id = parseIntFromMap(obj, "_id");
                     String name = getStringFromMap(obj, "name");
                     Double gpa = parseDoubleFromMap(obj, "gpa");
-                    if (id == null || name == null || gpa == null) return false;
-                    command.setArgs(new String[]{db, collection, methodAndArgs, String.valueOf(id), name, String.valueOf(gpa)});
+                    if (id == null || name == null || gpa == null) {
+                        return engine.executeCommand(makeErrorCommand(command, "insertOne requires id, name, gpa"));
+                    }
+                    command.setArgs(new String[]{db, collection, method + "(" + argsInside + ")", String.valueOf(id), name, String.valueOf(gpa)});
                     break;
+                }
 
-                case "deleteOne":
-                    // could be {id:100} or id:100 or simply 100
+                case "deleteOne": {
                     if (argsInside.startsWith("{") && argsInside.endsWith("}")) {
-                        Map<String, String> delObj = parseObject(argsInside);
-                        if (delObj == null) return false;
-                        Integer delId = parseIntFromMap(delObj, "_id");
-                        if (delId == null) return false;
-                        command.setArgs(new String[]{db, collection, methodAndArgs, String.valueOf(delId)});
+                        Map<String, String> obj = parseObject(argsInside);
+                        if (obj == null) return engine.executeCommand(makeErrorCommand(command, "invalid object for deleteOne"));
+                        Integer id = parseIntFromMap(obj, "id");
+                        if (id == null) id = parseIntFromMap(obj, "_id");
+                        if (id == null) return engine.executeCommand(makeErrorCommand(command, "deleteOne requires id"));
+                        command.setArgs(new String[]{db, collection, method + "(" + argsInside + ")", String.valueOf(id)});
                     } else {
-                        // try to parse plain numeric or key:value
-                        Integer plainId = tryParsePlainId(argsInside);
-                        if (plainId == null) return false;
-                        command.setArgs(new String[]{db, collection, methodAndArgs, String.valueOf(plainId)});
+                        Integer id = tryParsePlainId(argsInside);
+                        if (id == null) return engine.executeCommand(makeErrorCommand(command, "invalid id for deleteOne"));
+                        command.setArgs(new String[]{db, collection, method + "(" + argsInside + ")", String.valueOf(id)});
                     }
                     break;
+                }
 
-                case "findByID":
-                    // either numeric or quoted string
+                case "findByID": {
                     String idArg = stripWrappingQuotes(argsInside);
-                    command.setArgs(new String[]{db, collection, methodAndArgs, idArg});
+                    if (idArg == null || idArg.isEmpty()) return engine.executeCommand(makeErrorCommand(command, "empty id for findByID"));
+                    command.setArgs(new String[]{db, collection, method + "(" + argsInside + ")", idArg});
                     break;
+                }
 
                 default:
-                    // for other methods, leave original args but include a cleaned single arg entry
-                    command.setArgs(new String[]{db, collection, methodAndArgs, argsInside});
+                    // generic: keep raw args as single cleaned entry
+                    command.setArgs(new String[]{db, collection, method + "(" + argsInside + ")", argsInside});
                     break;
             }
 
             return engine.executeCommand(command);
         } catch (Exception ex) {
-            // defensive: don't propagate parsing/runtime exceptions
-            return false;
+            return engine.executeCommand(makeErrorCommand("unexpected parse error: " + ex.getMessage()));
         }
     }
 
-    // parse a JSON-like object into a map of key->rawValue (strings trimmed, quotes removed)
+    // helper to create an error Command with a message prefix the engine can detect
+    private static Command makeErrorCommand(String msg) {
+        return makeErrorCommand(new Command("", "", "invalid", new String[]{"", "", ""}), msg);
+    }
+
+    private static Command makeErrorCommand(Command base, String msg) {
+        String err = "__ERROR__:" + (msg == null ? "unknown" : msg);
+        base.setArgs(new String[]{base.getArgs() != null && base.getArgs().length > 0 ? base.getArgs()[0] : "",
+                base.getArgs() != null && base.getArgs().length > 1 ? base.getArgs()[1] : "",
+                base.getArgs() != null && base.getArgs().length > 2 ? base.getArgs()[2] : "", err});
+        return base;
+    }
+
+    // parse a simple JSON-like top-level object into map (handles quoted strings and nested braces/brackets)
     private static Map<String, String> parseObject(String s) {
         if (s == null) return null;
         s = s.trim();
@@ -91,59 +111,41 @@ public class QueryParser {
         StringBuilder token = new StringBuilder();
         boolean inQuotes = false;
         char quoteChar = 0;
-        int depth = 0; // track nested braces/brackets so we only split top-level commas
+        int depth = 0;
 
-        List<String> pairs = new ArrayList<>();
+        List<String> parts = new ArrayList<>();
         for (int i = 0; i < s.length(); i++) {
             char c = s.charAt(i);
             if ((c == '"' || c == '\'') && (quoteChar == 0 || quoteChar == c)) {
-                if (inQuotes && quoteChar == c) {
-                    inQuotes = false;
-                    quoteChar = 0;
-                    token.append(c);
-                } else if (!inQuotes) {
-                    inQuotes = true;
-                    quoteChar = c;
-                    token.append(c);
-                } else {
-                    token.append(c);
-                }
-                continue;
+                if (inQuotes && quoteChar == c) { inQuotes = false; quoteChar = 0; token.append(c); continue; }
+                if (!inQuotes) { inQuotes = true; quoteChar = c; token.append(c); continue; }
             }
             if (!inQuotes) {
-                if (c == '{' || c == '[') {
-                    depth++;
-                } else if (c == '}' || c == ']') {
-                    depth = Math.max(0, depth - 1);
-                } else if (c == ',' && depth == 0) {
-                    pairs.add(token.toString());
-                    token.setLength(0);
-                    continue;
-                }
+                if (c == '{' || c == '[') depth++;
+                else if (c == '}' || c == ']') depth = Math.max(0, depth - 1);
+                else if (c == ',' && depth == 0) { parts.add(token.toString()); token.setLength(0); continue; }
             }
             token.append(c);
         }
-        if (token.length() > 0) pairs.add(token.toString());
+        if (token.length() > 0) parts.add(token.toString());
 
-        for (String pair : pairs) {
-            String p = pair.trim();
+        for (String part : parts) {
+            String p = part.trim();
             if (p.isEmpty()) continue;
-            // split on first colon not inside quotes
-            int colonIndex = -1;
+            int colon = -1;
             boolean inQ = false;
             char qch = 0;
             for (int i = 0; i < p.length(); i++) {
                 char c = p.charAt(i);
                 if ((c == '"' || c == '\'') && (qch == 0 || qch == c)) {
-                    if (inQ && qch == c) { inQ = false; qch = 0; }
-                    else if (!inQ) { inQ = true; qch = c; }
+                    if (inQ && qch == c) { inQ = false; qch = 0; } else if (!inQ) { inQ = true; qch = c; }
                     continue;
                 }
-                if (!inQ && c == ':') { colonIndex = i; break; }
+                if (!inQ && c == ':') { colon = i; break; }
             }
-            if (colonIndex < 0) continue;
-            String key = p.substring(0, colonIndex).trim();
-            String val = p.substring(colonIndex + 1).trim();
+            if (colon < 0) continue;
+            String key = p.substring(0, colon).trim();
+            String val = p.substring(colon + 1).trim();
             key = stripWrappingQuotes(key).toLowerCase(Locale.ROOT);
             val = stripWrappingQuotes(val);
             map.put(key, val);
@@ -164,56 +166,38 @@ public class QueryParser {
 
     private static Integer parseIntFromMap(Map<String, String> map, String key) {
         if (map == null) return null;
-        String v = map.get(key.toLowerCase());
+        String v = map.get(key.toLowerCase(Locale.ROOT));
         if (v == null) return null;
-        try {
-            return Integer.parseInt(v.trim());
-        } catch (NumberFormatException ex) {
-            return null;
-        }
+        try { return Integer.parseInt(v.trim()); } catch (NumberFormatException ex) { return null; }
     }
 
     private static Double parseDoubleFromMap(Map<String, String> map, String key) {
         if (map == null) return null;
         String v = map.get(key.toLowerCase(Locale.ROOT));
         if (v == null) return null;
-        try {
-            return Double.parseDouble(v.trim());
-        } catch (NumberFormatException ex) {
-            return null;
-        }
+        try { return Double.parseDouble(v.trim()); } catch (NumberFormatException ex) { return null; }
     }
 
     private static String getStringFromMap(Map<String, String> map, String key) {
         if (map == null) return null;
-        String v = map.get(key.toLowerCase(Locale.ROOT));
-        return v;
+        return map.get(key.toLowerCase(Locale.ROOT));
     }
 
     private static Integer tryParsePlainId(String s) {
         if (s == null) return null;
         s = s.trim();
-        // support "id:100" plain
         if (s.contains(":")) {
             String[] parts = s.split(":", 2);
             return tryParseInt(parts[1].trim());
         }
-        // or just numeric
         return tryParseInt(s);
     }
 
     private static Integer tryParseInt(String s) {
         s = stripWrappingQuotes(s);
-        try {
-            return Integer.parseInt(s);
-        } catch (Exception ex) {
-            return null;
-        }
+        try { return Integer.parseInt(s); } catch (Exception ex) { return null; }
     }
 }
-
-
-
 
 
 

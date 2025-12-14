@@ -1,15 +1,11 @@
 package Engine;
 
+import Engine.Commands.*;
 import Models.Student;
-import Storage.ArrayCollection;
-import Storage.Collection;
-import Storage.FileReader;
 import Storage.StorageManager;
 
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.Stack;
 
 public class ExecutionEngine {
 
@@ -25,13 +21,13 @@ public class ExecutionEngine {
     public boolean executeCommandDirectly(Command command) {
 
         if (command.getCommandType().equals("insertOne")) {
-            if(Executers.insertOne(new Student(Integer.parseInt(command.getArgs()[3]),command.getArgs()[4],Double.parseDouble(command.getArgs()[5])))){
+            if(InsertOneCommand.execute(new Student(Integer.parseInt(command.getArgs()[3]),command.getArgs()[4],Double.parseDouble(command.getArgs()[5])))){
                 System.out.println("Insert successful.");
             }else{
                 System.out.println("Insert failed.");
             }
         }else if (command.getCommandType().equals("deleteOne")) {
-            if (Executers.deleteOne(Integer.parseInt(command.getArgs()[3]))) {
+            if (DeleteOneCommand.execute(Integer.parseInt(command.getArgs()[3]))) {
                 System.out.println("Delete successful.");
             } else {
                 System.out.println("Delete failed.");
@@ -61,21 +57,21 @@ public class ExecutionEngine {
             executeCommandDirectly(command);
         }else if (command.getCommandType().equals("save")){
             System.out.println("Saving data...");
-            if(Executers.saveData()){
+            if(SaveDataCommand.execute()){
                 System.out.println("Data saved successfully.");
             } else {
                 System.out.println("Data saving failed.");
             }
         }else if (command.getCommandType().equals("saveAs")){
             System.out.println("Saving data to " + command.getArgs()[2] + " ...");
-            if(Executers.saveData(command.getArgs()[2])){
+            if(SaveDataCommand.execute(command.getArgs()[2])){
                 System.out.println("Data saved successfully.");
             } else {
                 System.out.println("Data saving failed.");
             }
         }else if (command.getCommandType().equals("load-saved")){
             System.out.println("Loading saved data from ");
-            if(Executers.loadData()){
+            if(LoadDataCommand.execute()){
                 System.out.println("Data loaded successfully.");
             } else {
                 System.out.println("Data loading failed.");
@@ -105,21 +101,21 @@ public class ExecutionEngine {
             }
             executeCommandDirectly(command);
         }else if (command.getCommandType().equals("findByID")) {
-            Student st = Executers.findByID(Integer.parseInt(command.getArgs()[3]));
+            Student st = FindByIdCommand.execute(Integer.parseInt(command.getArgs()[3]));
             if (st != null) {
                 System.out.println("Found Student: ID=" + st.getId() + ", Name=" + st.getName() + ", Gpa=" + st.getGpa());
             } else {
                 System.out.println("Student not found.");
             }
         }else if (command.getCommandType().equals("findAll")) {
-            Student[] students = Executers.findAll();
+            Student[] students = FindAllCommand.execute();
             System.out.println("All Students:");
             for (Student st : students) {
                 System.out.println("ID=" + st.getId() + ", Name=" + st.getName() + ", Gpa=" + st.getGpa());
             }
             return true;
         } else if (command.getCommandType().equals("import")) {
-            if(Executers.importData(command.getArgs()[2].substring(command.getArgs()[2].indexOf('(') + 2,
+            if(ImportDataCommand.execute(command.getArgs()[2].substring(command.getArgs()[2].indexOf('(') + 2,
                     command.getArgs()[2].lastIndexOf(')')-1).trim())){
                 System.out.println("Import successful.");
             }else{
@@ -131,20 +127,20 @@ public class ExecutionEngine {
             String field = conditions[0].substring(conditions[0].indexOf('(') +2, conditions[0].lastIndexOf('"')).trim();
             String value = conditions[1].substring(1, conditions[1].lastIndexOf(')')-1).trim();
             System.out.println("Filtering by " + field + " = " + value);
-            for (Student st : Executers.filterByField(field, value)) {
+            for (Student st : FilterByFieldCommand.execute(field, value)) {
                 System.out.println("ID=" + st.getId() + ", Name=" + st.getName() + ", Gpa=" + st.getGpa());
             }
             return true;
         } else if (command.getCommandType().equals("count")) {
-            System.out.println("Total count: " + Executers.count());
+            System.out.println("Total count: " + CountCommand.execute());
         } else if (command.getCommandType().equals("sum")) {
             System.out.println("Calculating sum...");
-            double sum = Executers.sumOfField(command.getArgs()[2].substring(command.getArgs()[2].indexOf('(') + 2,
+            double sum = SumOfFieldCommand.execute(command.getArgs()[2].substring(command.getArgs()[2].indexOf('(') + 2,
                     command.getArgs()[2].lastIndexOf(')')-1).trim());
             System.out.println("Sum: " + sum);
         } else if (command.getCommandType().equals("average")) {
             System.out.println("Calculating average...");
-            double avg = Executers.averageOfField(command.getArgs()[2].substring(command.getArgs()[2].indexOf('(') + 2,
+            double avg = AverageOfFieldCommand.execute(command.getArgs()[2].substring(command.getArgs()[2].indexOf('(') + 2,
                     command.getArgs()[2].lastIndexOf(')')-1).trim());
             System.out.println("Average: " + avg);
         }else if (command.getCommandType().equals("start")) {
