@@ -3,9 +3,11 @@ package Engine;
 public class Command {
     private String root;
     private String Collection ;
-    private String commandType;
+    private CommandType commandType;
     private String[] args;
-    public Command(String root ,String collection ,String commandType, String[] args) {
+    public Command(String root ,String collection ,CommandType commandType, String[] args) {
+        this.root = root;
+        this.Collection = collection;
         this.commandType = commandType;
         this.args = args;
     }
@@ -26,7 +28,7 @@ public class Command {
         Collection = collection;
     }
 
-    public void setCommandType(String commandType) {
+    public void setCommandType(CommandType commandType) {
         this.commandType = commandType;
     }
 
@@ -34,7 +36,7 @@ public class Command {
         this.args = args;
     }
 
-    public String getCommandType() {
+    public CommandType getCommandType() {
         return commandType;
     }
 

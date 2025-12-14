@@ -1,6 +1,7 @@
 package Storage;
 
 import Engine.Command;
+import Engine.CommandType;
 import Models.Student;
 
 import java.util.List;
@@ -49,7 +50,7 @@ public class StorageManager {
             if (!insertOne(student)) {
                 return null;
             } else {
-                commands.add(new Command("db", "s", "deleteOne", new String[]{
+                commands.add(new Command("db", "s", CommandType.DELETE_ONE, new String[]{
                         "db",
                         "s",
                         "deleteOne",

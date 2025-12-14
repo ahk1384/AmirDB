@@ -1,6 +1,7 @@
 package Parser;
 
 import Engine.Command;
+import Engine.CommandType;
 import Engine.ExecutionEngine;
 
 import java.util.*;
@@ -35,7 +36,8 @@ public class QueryParser {
                 return engine.executeCommand(makeErrorCommand("empty db/collection/method"));
             }
 
-            Command command = new Command(db, collection, method, new String[]{db, collection, method + "(" + argsInside + ")"});
+            CommandType commandType = stringToCommandType(method);
+            Command command = new Command(db, collection, commandType, new String[]{db, collection, method + "(" + argsInside + ")"});
 
             switch (method) {
                 case "insertOne": {
@@ -89,7 +91,7 @@ public class QueryParser {
 
     // helper to create an error Command with a message prefix the engine can detect
     private static Command makeErrorCommand(String msg) {
-        return makeErrorCommand(new Command("", "", "invalid", new String[]{"", "", ""}), msg);
+        return makeErrorCommand(new Command("", "", CommandType.UNKNOWN, new String[]{"", "", ""}), msg);
     }
 
     private static Command makeErrorCommand(Command base, String msg) {
@@ -196,6 +198,31 @@ public class QueryParser {
     private static Integer tryParseInt(String s) {
         s = stripWrappingQuotes(s);
         try { return Integer.parseInt(s); } catch (Exception ex) { return null; }
+    }
+
+    private static CommandType stringToCommandType(String method) {
+        if (method == null) return CommandType.UNKNOWN;
+        switch (method) {
+            case "insertOne": return CommandType.INSERT_ONE;
+            case "deleteOne": return CommandType.DELETE_ONE;
+            case "findByID": return CommandType.FIND_BY_ID;
+            case "findAll": return CommandType.FIND_ALL;
+            case "import": return CommandType.IMPORT_DATA;
+            case "filter": return CommandType.FILTER;
+            case "save": return CommandType.SAVE;
+            case "saveAs": return CommandType.SAVE_AS;
+            case "load-saved": return CommandType.LOAD_SAVED;
+            case "count": return CommandType.COUNT;
+            case "sum": return CommandType.SUM;
+            case "average": return CommandType.AVERAGE;
+            case "start": return CommandType.START_BATCH;
+            case "execute": return CommandType.EXECUTE_BATCH;
+            case "beginTransaction": return CommandType.BEGIN_TRANSACTION;
+            case "commit": return CommandType.COMMIT;
+            case "rollback": return CommandType.ROLLBACK;
+            case "exit": return CommandType.EXIT;
+            default: return CommandType.UNKNOWN;
+        }
     }
 }
 

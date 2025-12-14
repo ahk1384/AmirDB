@@ -1,0 +1,26 @@
+package Engine;
+
+public enum CommandType {
+    INSERT_ONE,
+    INSERT_ONE_DIRECT,
+    DELETE_ONE,
+    DELETE_ONE_DIRECT,
+    FIND_BY_ID,
+    FIND_ALL,
+    IMPORT_DATA,
+    IMPORT_DATA_WITH_TRANSACTION,
+    COMMIT,
+    ROLLBACK,
+    EXIT,
+    FILTER,
+    SAVE,
+    SAVE_AS,
+    LOAD_SAVED,
+    COUNT,
+    SUM,
+    AVERAGE,
+    START_BATCH,
+    EXECUTE_BATCH,
+    BEGIN_TRANSACTION,
+    UNKNOWN
+}
