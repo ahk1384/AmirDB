@@ -14,9 +14,20 @@ public class ArrayCollection implements Collection {
         return students.add(student);
     }
 
-    public boolean deleteOne(int id) {
+    public boolean deleteOne(Long id) {
         return students.removeIf(student -> student.getId() == id);
     }
+
+    @Override
+    public Student findByID(Long id) {
+        for (Student student : students) {
+            if (student.getId() == id) {
+                return student;
+            }
+        }
+        return null;
+    }
+
     public Student findByID(int id) {
         for (Student student : students) {
             if (student.getId() == id) {

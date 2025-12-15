@@ -2,10 +2,20 @@ package Engine.Commands;
 
 import Storage.StorageManager;
 
-public class CountCommand {
-    private static final StorageManager sm = StorageManager.getInstance();
+import java.io.IOException;
 
-    public static Integer execute() {
+public class CountCommand {
+    private static final StorageManager sm;
+
+    static {
+        try {
+            sm = StorageManager.getInstance();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static Long execute() {
         return sm.count();
     }
 }

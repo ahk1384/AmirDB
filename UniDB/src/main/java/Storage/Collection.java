@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface Collection {
     boolean insertOne(Student student);
-    boolean deleteOne(int id);
-    Student findByID(int id);
+    boolean deleteOne(Long id);
+    Student findByID(Long id);
     List<Student> findAll();
 }

@@ -1,10 +1,13 @@
 package Models;
+
+import Storage.StudentRecord;
+
 public class Student {
-    public int id;
+    public long id;
     public String name;
     public double gpa;
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
@@ -24,9 +27,12 @@ public class Student {
         this.gpa = gpa;
     }
 
-    public Student(int id, String name, double gpa) {
+    public Student(long id, String name, double gpa) {
         this.id = id;
         this.name = name;
         this.gpa = gpa;
+    }
+    public StudentRecord toStudentRecord() {
+        return new StudentRecord(id, name, gpa);
     }
 }

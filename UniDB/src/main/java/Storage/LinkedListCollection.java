@@ -33,7 +33,7 @@ public class LinkedListCollection implements Collection {
         return true;
     }
 
-    private boolean IsExisting(int id) {
+    private boolean IsExisting(Long id) {
         if (findByID(id) != null) {
             return true;
         }
@@ -41,7 +41,7 @@ public class LinkedListCollection implements Collection {
     }
 
 
-    public boolean deleteOne(int id) {
+    public boolean deleteOne(Long id) {
         Node current = head;
         while (current != null) {
             if (current.data.getId() == id) {
@@ -62,7 +62,7 @@ public class LinkedListCollection implements Collection {
         return false;
     }
 
-    public Student findByID(int id) {
+    public Student findByID(Long id) {
         Node current = head;
         while (current != null) {
             if (current.data.getId() == id) {

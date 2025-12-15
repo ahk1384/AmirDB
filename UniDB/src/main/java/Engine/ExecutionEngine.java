@@ -4,6 +4,7 @@ import Models.Student;
 import Storage.StorageManager;
 import Engine.Commands.*;
 
+import java.io.IOException;
 import java.util.*;
 
 public class ExecutionEngine {
@@ -15,7 +16,7 @@ public class ExecutionEngine {
 
     Map<CommandType, CommandHandler> commandHandlers = new HashMap<>();
 
-    public ExecutionEngine() {
+    public ExecutionEngine() throws IOException {
         this.currentMode = ProgramMode.NORMAL;
         commandHandlers.put(CommandType.INSERT_ONE_DIRECT, this::handleInsertOneDirect);
         commandHandlers.put(CommandType.INSERT_ONE, this::handleInsertOne);
@@ -54,6 +55,13 @@ public class ExecutionEngine {
         CommandHandler handler = commandHandlers.get(command.getCommandType());
         if (handler != null) {
             try {
+                if (command.getCommandType() == CommandType.INSERT_ONE ||
+                        command.getCommandType() == CommandType.DELETE_ONE) {
+                    Command directCommand = new Command(command.getRoot(), command.getCollection(),
+                            command.getCommandType() == CommandType.INSERT_ONE ? CommandType.INSERT_ONE_DIRECT : CommandType.DELETE_ONE_DIRECT,
+                            command.getArgs());
+                    return handler.handle(directCommand);
+                }
                 return handler.handle(command);
             } catch (Exception e) {
                 System.out.println("Command execution failed: " + e.getMessage());
@@ -99,7 +107,7 @@ public class ExecutionEngine {
     }
 
     public boolean handleDeleteOneDirect(Command command) {
-        if (DeleteOneCommand.execute(Integer.parseInt(command.getArgs()[3]))) {
+        if (DeleteOneCommand.execute(Long.parseLong(command.getArgs()[3]))) {
             System.out.println("Delete successful.");
             return true;
         } else {
@@ -110,7 +118,7 @@ public class ExecutionEngine {
 
     public boolean handleDeleteOne(Command command) {
         if (currentMode == ProgramMode.TRANSACTION) {
-            Student s = sm.findByID(Integer.parseInt(command.getArgs()[3]));
+            Student s = sm.findByID(Long.parseLong(command.getArgs()[3]));
             if (s != null) {
                 if (executeCommandDirectly(command)) {
                     Command tmp = new Command(command.getRoot(), command.getCollection(), CommandType.INSERT_ONE,
@@ -168,7 +176,7 @@ public class ExecutionEngine {
     }
 
     public boolean handleFindByID(Command command) {
-        Student st = FindByIdCommand.execute(Integer.parseInt(command.getArgs()[3]));
+        Student st = FindByIdCommand.execute(Long.parseLong(command.getArgs()[3]));
         if (st != null) {
             System.out.println("Found Student: ID=" + st.getId() + ", Name=" + st.getName() + ", Gpa=" + st.getGpa());
             return true;
@@ -179,7 +187,7 @@ public class ExecutionEngine {
     }
 
     public boolean handleFindAll(Command command) {
-        Student[] students = FindAllCommand.execute();
+        List<Student> students = FindAllCommand.execute();
         System.out.println("All Students:");
         for (Student st : students) {
             System.out.println("ID=" + st.getId() + ", Name=" + st.getName() + ", Gpa=" + st.getGpa());
@@ -260,9 +268,13 @@ public class ExecutionEngine {
         if (currentMode != ProgramMode.TRANSACTION) {
             System.out.println("Not in transaction mode.");
         } else {
-            while (!transactionStack.isEmpty()) {
+            int count = command.getArgs().length > 3 ? Integer.parseInt(command.getArgs()[3]) : -1;
+            while (!transactionStack.isEmpty() && (count != 0)) {
                 Command cmd = transactionStack.pop();
                 executeCommandDirectly(cmd);
+                if (count > 0) {
+                    count--;
+                }
             }
             currentMode = ProgramMode.NORMAL;
             System.out.println("Transaction rolled back.");
