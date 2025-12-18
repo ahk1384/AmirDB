@@ -9,10 +9,10 @@ public class Request implements Serializable {
         this.messageType = messageType;
         this.query = query;
     }
-    public MessageType getMessageType() {
+    public MessageType getType() {
         return messageType;
     }
-    public String getquery() {
+    public String getQuery() {
         return query;
     }
 }
