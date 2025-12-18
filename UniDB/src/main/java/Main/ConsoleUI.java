@@ -139,14 +139,5 @@ public class ConsoleUI {
         } catch (Exception ignored) {}
     }
 
-    public static List<String[]> rowsFromObjects(List<Object[]> list) {
-        List<String[]> out = new ArrayList<>();
-        for (Object[] r : list) {
-            String[] s = new String[r.length];
-            for (int i = 0; i < r.length; i++) s[i] = r[i] == null ? "" : String.valueOf(r[i]);
-            out.add(s);
-        }
-        return out;
-    }
 }
 

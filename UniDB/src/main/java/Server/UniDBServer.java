@@ -13,8 +13,8 @@ public class UniDBServer {
         engine = new ExecutionEngine();
     }
 
-    public void start() throws IOException {
-        ServerSocket serverSocket = new ServerSocket(PORT);
+    public void start() throws Exception {
+        ServerSocket serverSocket = new ServerConfig().createServerSocket(5000);
         System.out.println("🚀 UniDB Server running on port " + PORT);
 
         while (true) {
@@ -24,7 +24,7 @@ public class UniDBServer {
         }
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         new UniDBServer().start();
     }
 }
