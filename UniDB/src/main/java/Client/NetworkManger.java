@@ -1,4 +1,4 @@
-package Clinet;
+package Client;
 
 public class NetworkManger {
 }

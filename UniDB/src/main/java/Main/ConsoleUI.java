@@ -34,16 +34,21 @@ public class ConsoleUI {
         }
     }
 
-    public void printBanner(String title) {
+    public String printBanner(String title) {
+        StringBuilder result = new StringBuilder();
         String t = " " + title.trim() + " ";
         int width = Math.max(40, t.length() + 10);
         String line = new String(new char[width]).replace('\0', '*');
         System.out.println(BOLD + YELLOW + line + RESET);
+        result.append(BOLD + YELLOW + line + RESET).append("\n");
         int pad = (width - t.length()) / 2;
         String leftPad = new String(new char[Math.max(0, pad - 1)]).replace('\0', ' ');
         String rightPad = new String(new char[Math.max(0, width - pad - t.length() - 1)]).replace('\0', ' ');
         System.out.println(BOLD + YELLOW + "*" + leftPad +CYAN + BOLD + t + rightPad +YELLOW+ "*" + RESET);
+        result.append(BOLD + YELLOW + "*" + leftPad +CYAN + BOLD + t + rightPad +YELLOW+ "*" + RESET).append("\n");
         System.out.println(BOLD + YELLOW + line + RESET);
+        result.append(BOLD + YELLOW + line + RESET).append("\n");
+        return result.toString();
     }
 
     public void printMenu(List<String> options) {
@@ -54,23 +59,35 @@ public class ConsoleUI {
     }
 
     public String prompt(String message) {
+        StringBuilder promptBuilder = new StringBuilder();
         System.out.print(BOLD + BLUE + "» " + MAGENTA + message + " " +RESET);
-        return scanner.nextLine().trim();
+        promptBuilder.append(BOLD + BLUE + "» " + MAGENTA + message + " " +RESET);
+        return promptBuilder.toString();
     }
 
-    public void printlnInfo(String msg) {
+    public String printlnInfo(String msg) {
+        StringBuilder promptBuilder = new StringBuilder();
         System.out.println(BOLD + BRIGHT_BLACK + "-> " + CYAN + msg+ RESET);
+        promptBuilder.append(BOLD + BRIGHT_BLACK + "-> " + CYAN + msg+ RESET);
+        return promptBuilder.toString();
     }
 
-    public void printlnSuccess(String msg) {
+    public String printlnSuccess(String msg) {
+        StringBuilder promptBuilder = new StringBuilder();
         System.out.println(BOLD + GREEN + "✔ " + GREEN + msg + RESET);
+        promptBuilder.append(BOLD + GREEN + "✔ " + GREEN + msg + RESET);
+        return promptBuilder.toString();
     }
 
-    public void printlnError(String msg) {
+    public String printlnError(String msg) {
+        StringBuilder promptBuilder = new StringBuilder();
         System.out.println(BOLD + RED + "✖ " + RED + msg + RESET);
+        promptBuilder.append(BOLD + RED + "✖ " + RED + msg + RESET);
+        return promptBuilder.toString();
     }
 
-    public void printTable(String[] headers, List<String[]> rows) {
+    public String printTable(String[] headers, List<String[]> rows) {
+        StringBuilder result = new StringBuilder();
         int cols = headers.length;
         int[] widths = new int[cols];
         for (int i = 0; i < cols; i++) widths[i] = headers[i].length();
@@ -84,6 +101,7 @@ public class ConsoleUI {
         for (int w : widths) sep.append("+").append(new String(new char[w + 2]).replace('\0', '-'));
         sep.append("+");
         System.out.println(BOLD + LIGHT_BLUE + sep.toString() + RESET);
+        result.append(BOLD + LIGHT_BLUE + sep.toString() + RESET).append("\n");
 
         StringBuilder hdr = new StringBuilder();
         for (int i = 0; i < cols; i++) {
@@ -92,9 +110,10 @@ public class ConsoleUI {
         }
         hdr.append(LIGHT_BLUE).append("|").append(RESET);
         System.out.println(hdr.toString());
+        result.append(hdr.toString()).append("\n");
 
         System.out.println(BOLD + LIGHT_BLUE + sep.toString() + RESET);
-
+        result.append(BOLD + LIGHT_BLUE + sep.toString() + RESET).append("\n");
         // rows
         boolean alt = false;
         for (String[] row : rows) {
@@ -105,8 +124,11 @@ public class ConsoleUI {
             }
             r.append(LIGHT_BLUE).append("|").append(RESET);
             System.out.println(r.toString());
+            result.append(r.toString()).append("\n");
             System.out.println(BOLD + LIGHT_BLUE + sep.toString() + RESET);
+            result.append(BOLD + LIGHT_BLUE + sep.toString() + RESET).append("\n");
         }
+        return result.toString();
     }
     public void close() {
         try { scanner.close(); } catch (Exception ignored) {}

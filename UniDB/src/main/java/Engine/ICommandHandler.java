@@ -1,5 +1,5 @@
 package Engine;
 
 interface CommandHandler {
-    boolean handle(Command command);
+    String handle(Command command);
 }

@@ -9,8 +9,8 @@ import java.util.*;
 public class QueryParser {
 
     // main entry: returns engine.executeCommand(...) result
-    public static boolean parseAndExecute(String input, ExecutionEngine engine) {
-        if (input == null || engine == null) return false;
+    public static String parseAndExecute(String input, ExecutionEngine engine) {
+        if (input == null || engine == null) return null;
         input = input.trim();
         if (input.isEmpty()) return engine.executeCommand(makeErrorCommand("empty input"));
 

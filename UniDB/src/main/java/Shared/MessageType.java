@@ -1,6 +1,6 @@
 package Shared;
 
 public enum MessageType {
-    QEURY,
+    QUERY,
     EXIT
 }
