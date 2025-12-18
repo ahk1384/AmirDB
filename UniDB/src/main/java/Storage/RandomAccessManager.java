@@ -1,3 +1,4 @@
+// java
 package Storage;
 
 import java.io.IOException;
@@ -19,6 +20,7 @@ public class RandomAccessManager {
             file = new RandomAccessFile(FILE_NAME, "rw");
         } catch (IOException e) {
             e.printStackTrace();
+            file = null;
         }
 
         indexMap = new HashMap<>();
@@ -26,7 +28,14 @@ public class RandomAccessManager {
         loadExistingRecords();
     }
 
+    private void ensureFileOpen() {
+        if (file == null) {
+            throw new IllegalStateException("RandomAccessFile is not open");
+        }
+    }
+
     private void loadExistingRecords() {
+        if (file == null) return;
         try {
             long fileLen = file.length();
             long pos = 0;
@@ -38,13 +47,15 @@ public class RandomAccessManager {
                 }
                 pos += StudentRecord.RECORD_SIZE;
             }
-            nextPosition = fileLen; // append at the end
+
+            nextPosition = (fileLen / StudentRecord.RECORD_SIZE) * StudentRecord.RECORD_SIZE;
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public boolean writeRecord(StudentRecord record) {
+        ensureFileOpen();
         long position;
         if (indexMap.containsKey(record.getId())) {
             position = indexMap.get(record.getId());
@@ -55,7 +66,7 @@ public class RandomAccessManager {
         try {
             file.seek(position);
             file.writeLong(record.getId());
-            file.writeChars(CompleteString(record.getName(), StudentRecord.NAME_SIZE));
+            file.writeChars(completeString(record.getName(), StudentRecord.NAME_SIZE));
             file.writeDouble(record.getGpa());
         } catch (IOException e) {
             e.printStackTrace();
@@ -66,6 +77,7 @@ public class RandomAccessManager {
     }
 
     public List<StudentRecord> readAllRecord() {
+        ensureFileOpen();
         List<StudentRecord> records = new ArrayList<>();
         try {
             long fileLen = file.length();
@@ -87,6 +99,7 @@ public class RandomAccessManager {
     }
 
     public StudentRecord readRecordByID(Long recordId) {
+        ensureFileOpen();
         Long position = indexMap.get(recordId);
         if (position == null) {
             return null;
@@ -104,13 +117,14 @@ public class RandomAccessManager {
     }
 
     public boolean deleteRecordById(Long studentId) {
+        ensureFileOpen();
         Long position = indexMap.get(studentId);
         if (position == null) {
             return false;
         }
         try {
             file.seek(position);
-            file.writeLong(-1L); // mark as deleted using long
+            file.writeLong(-1L);
             indexMap.remove(studentId);
         } catch (IOException e) {
             e.printStackTrace();
@@ -123,17 +137,13 @@ public class RandomAccessManager {
         return indexMap.containsKey(studentId);
     }
 
-//    public boolean close() throws IOException {
-//        file.close();
-//        return true;
-//    }
-
     public long getRecordCount() {
         return indexMap.size();
     }
 
-    public long sumOfFiled(String fieldName) {
-        long sum = 0;
+    public double sumOfFiled(String fieldName) {
+        ensureFileOpen();
+        double sum = 0.0;
         try {
             long fileLen = file.length();
             long pos = 0;
@@ -143,7 +153,7 @@ public class RandomAccessManager {
                 String name = readString(file, StudentRecord.NAME_SIZE);
                 double gpa = file.readDouble();
                 if (id != -1L) {
-                    if (fieldName.equals("gpa")) {
+                    if ("gpa".equals(fieldName)) {
                         sum += gpa;
                     }
                 }
@@ -155,8 +165,9 @@ public class RandomAccessManager {
         return sum;
     }
 
-    public long averageOfFiled(String fieldName) {
-        long sum = 0;
+    public double averageOfFiled(String fieldName) {
+        ensureFileOpen();
+        double sum = 0.0;
         long count = 0;
         try {
             long fileLen = file.length();
@@ -167,7 +178,7 @@ public class RandomAccessManager {
                 String name = readString(file, StudentRecord.NAME_SIZE);
                 double gpa = file.readDouble();
                 if (id != -1L) {
-                    if (fieldName.equals("gpa")) {
+                    if ("gpa".equals(fieldName)) {
                         sum += gpa;
                         count++;
                     }
@@ -177,9 +188,11 @@ public class RandomAccessManager {
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
-        return count == 0 ? 0 : sum / count;
+        return count == 0 ? 0.0 : sum / count;
     }
+
     public List<StudentRecord> filterByFiled(String fieldName, String value) {
+        ensureFileOpen();
         List<StudentRecord> results = new ArrayList<>();
         try {
             long fileLen = file.length();
@@ -190,10 +203,16 @@ public class RandomAccessManager {
                 String name = readString(file, StudentRecord.NAME_SIZE);
                 double gpa = file.readDouble();
                 if (id != -1L) {
-                    if (fieldName.equals("name") && name.equals(value)) {
+                    if ("name".equals(fieldName) && name.equals(value)) {
                         results.add(new StudentRecord(id, name, gpa));
-                    } else if (fieldName.equals("gpa") && Double.toString(gpa).equals(value)) {
-                        results.add(new StudentRecord(id, name, gpa));
+                    } else if ("gpa".equals(fieldName)) {
+                        try {
+                            double v = Double.parseDouble(value);
+                            if (Double.compare(gpa, v) == 0) {
+                                results.add(new StudentRecord(id, name, gpa));
+                            }
+                        } catch (NumberFormatException ignore) {
+                        }
                     }
                 }
                 pos += StudentRecord.RECORD_SIZE;
@@ -203,6 +222,7 @@ public class RandomAccessManager {
         }
         return results;
     }
+
     private String readString(RandomAccessFile file, int size) {
         StringBuilder sb = new StringBuilder(size);
         try {
@@ -215,19 +235,25 @@ public class RandomAccessManager {
         return sb.toString().trim();
     }
 
-    private String CompleteString(String str, int size) {
+    private String completeString(String str, int size) {
         StringBuilder sb = new StringBuilder(size);
         if (str != null) {
-            sb.append(str);
+            if (str.length() > size) {
+                sb.append(str, 0, size);
+            } else {
+                sb.append(str);
+            }
         }
         while (sb.length() < size) {
             sb.append(' ');
         }
         return sb.toString();
     }
+
     public void flush() throws IOException {
+        ensureFileOpen();
         if (file != null) {
-            file.getFD().sync(); // force OS to flush buffers to disk
+            file.getFD().sync();
         }
     }
 

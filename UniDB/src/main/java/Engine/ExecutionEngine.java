@@ -4,10 +4,13 @@ import Models.Student;
 import Storage.StorageManager;
 import Engine.Commands.*;
 
+import java.io.Console;
 import java.io.IOException;
 import java.util.*;
-
+import Main.ConsoleUI;
 public class ExecutionEngine {
+
+    ConsoleUI ui = new ConsoleUI();
 
     TransactionStack transactionStack;
     Queue<Command> batchQueue;
@@ -17,6 +20,7 @@ public class ExecutionEngine {
     Map<CommandType, CommandHandler> commandHandlers = new HashMap<>();
 
     public ExecutionEngine() throws IOException {
+        ConsoleUI.init();
         this.currentMode = ProgramMode.NORMAL;
         commandHandlers.put(CommandType.INSERT_ONE_DIRECT, this::handleInsertOneDirect);
         commandHandlers.put(CommandType.INSERT_ONE, this::handleInsertOne);
@@ -57,28 +61,37 @@ public class ExecutionEngine {
             try {
                 if (command.getCommandType() == CommandType.INSERT_ONE ||
                         command.getCommandType() == CommandType.DELETE_ONE) {
-                    Command directCommand = new Command(command.getRoot(), command.getCollection(),
-                            command.getCommandType() == CommandType.INSERT_ONE ? CommandType.INSERT_ONE_DIRECT : CommandType.DELETE_ONE_DIRECT,
-                            command.getArgs());
-                    return handler.handle(directCommand);
+                    if (command.getCommandType() == CommandType.INSERT_ONE) {
+                        Command directCommand = new Command(command.getRoot(), command.getCollection(),
+                                CommandType.INSERT_ONE_DIRECT,
+                                command.getArgs());
+                        handler = commandHandlers.get(CommandType.INSERT_ONE_DIRECT);
+                        return handler.handle(directCommand);
+                    }else if (command.getCommandType() == CommandType.DELETE_ONE) {
+                        Command directCommand = new Command(command.getRoot(), command.getCollection(),
+                                CommandType.DELETE_ONE_DIRECT,
+                                command.getArgs());
+                        handler = commandHandlers.get(CommandType.DELETE_ONE_DIRECT);
+                        return handler.handle(directCommand);
+                    }
                 }
                 return handler.handle(command);
             } catch (Exception e) {
-                System.out.println("Command execution failed: " + e.getMessage());
+                ui.printlnError("Command execution failed: " + e.getMessage());
                 return false;
             }
         } else {
-            System.out.println("Unknown command.");
+            ui.printlnError("Unknown command.");
             return false;
         }
     }
 
     public boolean handleInsertOneDirect(Command command) {
-        if (InsertOneCommand.execute(new Student(Integer.parseInt(command.getArgs()[3]), command.getArgs()[4], Double.parseDouble(command.getArgs()[5])))) {
-            System.out.println("Insert successful.");
+        if (InsertOneCommand.execute(new Student(Long.parseLong(command.getArgs()[3]), command.getArgs()[4], Double.parseDouble(command.getArgs()[5])))) {
+            ui.printlnSuccess("Insert successful.");
             return true;
         } else {
-            System.out.println("Insert failed.");
+            ui.printlnError("Insert failed.");
             return false;
         }
     }
@@ -98,7 +111,7 @@ public class ExecutionEngine {
             }
         } else if (currentMode == ProgramMode.BATCH) {
             batchQueue.add(command);
-            System.out.println("Command added to batch queue.");
+            ui.printlnSuccess("Command added to batch queue.");
             return true;
         } else {
             return executeCommandDirectly(command);
@@ -108,10 +121,10 @@ public class ExecutionEngine {
 
     public boolean handleDeleteOneDirect(Command command) {
         if (DeleteOneCommand.execute(Long.parseLong(command.getArgs()[3]))) {
-            System.out.println("Delete successful.");
+            ui.printlnSuccess("Delete successful.");
             return true;
         } else {
-            System.out.println("Delete failed.");
+            ui.printlnError("Delete failed.");
             return false;
         }
     }
@@ -136,7 +149,7 @@ public class ExecutionEngine {
             return true;
         } else if (currentMode == ProgramMode.BATCH) {
             batchQueue.add(command);
-            System.out.println("Command added to batch queue.");
+            ui.printlnSuccess("Command added to batch queue.");
             return true;
         } else {
             return executeCommandDirectly(command);
@@ -144,12 +157,12 @@ public class ExecutionEngine {
     }
 
     public boolean handleSave(Command command) {
-        System.out.println("Saving data...");
+        ui.printlnInfo("Saving data ...");
         if (SaveDataCommand.execute()) {
-            System.out.println("Data saved successfully.");
+            ui.printlnSuccess("Data saved successfully.");
             return true;
         } else {
-            System.out.println("Data saving failed.");
+            ui.printlnError("Data saving failed.");
             return false;
         }
     }
@@ -157,20 +170,20 @@ public class ExecutionEngine {
     public boolean handleSave_As(Command command) {
         System.out.println("Saving data to " + command.getArgs()[2] + " ...");
         if (SaveDataCommand.execute(command.getArgs()[2])) {
-            System.out.println("Data saved successfully.");
+            ui.printlnSuccess("Data saved successfully.");
             return true;
         } else {
-            System.out.println("Data saving failed.");
+            ui.printlnError("Data saving failed.");
             return false;
         }
     }
 
     public boolean handleLoad_Saved(Command command) {
         if (LoadDataCommand.execute()) {
-            System.out.println("Data loaded successfully.");
+            ui.printlnSuccess("Data loaded successfully.");
             return true;
         } else {
-            System.out.println("Data loading failed.");
+            ui.printlnError("Data loading failed.");
             return false;
         }
     }
@@ -178,7 +191,12 @@ public class ExecutionEngine {
     public boolean handleFindByID(Command command) {
         Student st = FindByIdCommand.execute(Long.parseLong(command.getArgs()[3]));
         if (st != null) {
-            System.out.println("Found Student: ID=" + st.getId() + ", Name=" + st.getName() + ", Gpa=" + st.getGpa());
+            List<String[]> rows = new ArrayList<>();
+            rows.add(new String[]{String.valueOf(st.getId()), st.getName(), String.valueOf(st.getGpa())});
+            ui.printTable(
+                    new String[]{"ID", "Name", "GPA"},
+                    rows
+            );
             return true;
         } else {
             System.out.println("Student not found.");
@@ -188,31 +206,34 @@ public class ExecutionEngine {
 
     public boolean handleFindAll(Command command) {
         List<Student> students = FindAllCommand.execute();
-        System.out.println("All Students:");
-        for (Student st : students) {
-            System.out.println("ID=" + st.getId() + ", Name=" + st.getName() + ", Gpa=" + st.getGpa());
-        }
+        ui.printlnInfo("All Students:");
+        ui.printTable(
+                new String[]{"ID", "Name", "GPA"},
+                students.stream()
+                        .map(s -> new String[]{String.valueOf(s.getId()), s.getName(), String.valueOf(s.getGpa())})
+                        .toList()
+        );
         return true;
     }
 
     public boolean handleCount(Command command) {
-        System.out.println("Total count: " + CountCommand.execute());
+        ui.printlnInfo("Total count: " + CountCommand.execute());
         return true;
     }
 
     public boolean handleSum(Command command) {
-        System.out.println("Calculating sum...");
+        ui.printlnInfo("Calculating sum...");
         double sum = SumOfFieldCommand.execute(command.getArgs()[2].substring(command.getArgs()[2].indexOf('(') + 2,
                 command.getArgs()[2].lastIndexOf(')') - 1).trim());
-        System.out.println("Sum: " + sum);
+        ui.printlnInfo("Sum: " + sum);
         return true;
     }
 
     public boolean handleAverage(Command command) {
-        System.out.println("Calculating average...");
+        ui.printlnInfo("Calculating average...");
         double avg = AverageOfFieldCommand.execute(command.getArgs()[2].substring(command.getArgs()[2].indexOf('(') + 2,
                 command.getArgs()[2].lastIndexOf(')') - 1).trim());
-        System.out.println("Average: " + avg);
+        ui.printlnInfo("Average: " + avg);
         return true;
     }
 
@@ -224,19 +245,24 @@ public class ExecutionEngine {
                 for (Command cmd : rollbackCommands) {
                     transactionStack.push(cmd);
                 }
-                System.out.println("Import successful.");
+                ui.printlnSuccess("Import successful.");
                 return true;
             } else {
-                System.out.println("Import failed.");
+                ui.printlnError("Import failed.");
                 return false;
             }
-        } else {
+        }
+        else if (currentMode == ProgramMode.BATCH) {
+            batchQueue.add(command);
+            ui.printlnSuccess("Command added to batch queue.");
+            return true;}
+        else {
             if (ImportDataWithTransactionCommand.execute(command.getArgs()[2].substring(command.getArgs()[2].indexOf('(') + 2,
                     command.getArgs()[2].lastIndexOf(')') - 1).trim()) != null) {
-                System.out.println("Import successful.");
+                ui.printlnSuccess("Import successful.");
                 return true;
             } else {
-                System.out.println("Import failed.");
+                ui.printlnError("Import failed.");
                 return false;
             }
         }
@@ -246,27 +272,33 @@ public class ExecutionEngine {
         String[] conditions = command.getArgs()[2].split(",");
         String field = conditions[0].substring(conditions[0].indexOf('(') + 2, conditions[0].lastIndexOf('"')).trim();
         String value = conditions[1].substring(1, conditions[1].lastIndexOf(')') - 1).trim();
-        System.out.println("Filtering by " + field + " = " + value);
-        for (Student st : FilterByFieldCommand.execute(field, value)) {
-            System.out.println("ID=" + st.getId() + ", Name=" + st.getName() + ", Gpa=" + st.getGpa());
+        ui.printlnInfo("Filtered Students:");
+        List<Student> results = FilterByFieldCommand.execute(field, value);
+        List<String[]> rows = new ArrayList<>();
+        for (Student st : results) {
+            rows.add(new String[]{String.valueOf(st.getId()), st.getName(), String.valueOf(st.getGpa())});
         }
+        ui.printTable(
+                new String[]{"ID", "Name", "GPA"},
+                rows
+        );
         return true;
     }
 
     public boolean handleBeginTransaction(Command command) {
         if (currentMode == ProgramMode.TRANSACTION) {
-            System.out.println("Already in transaction mode.");
+            ui.printlnError("Already in transaction mode.");
         } else {
             currentMode = ProgramMode.TRANSACTION;
             transactionStack = new TransactionStack();
-            System.out.println("Switched to transaction mode.");
+            ui.printlnSuccess("Switched to transaction mode.");
         }
         return true;
     }
 
     public boolean handleRollback(Command command) {
         if (currentMode != ProgramMode.TRANSACTION) {
-            System.out.println("Not in transaction mode.");
+            ui.printlnError("Not in transaction mode.");
         } else {
             int count = command.getArgs().length > 3 ? Integer.parseInt(command.getArgs()[3]) : -1;
             while (!transactionStack.isEmpty() && (count != 0)) {
@@ -277,44 +309,44 @@ public class ExecutionEngine {
                 }
             }
             currentMode = ProgramMode.NORMAL;
-            System.out.println("Transaction rolled back.");
+            ui.printBanner("Transaction rolled back.");
         }
         return true;
     }
 
     public boolean handleCommit(Command command) {
         if (currentMode != ProgramMode.TRANSACTION) {
-            System.out.println("Not in transaction mode.");
+            ui.printlnError("Not in transaction mode.");
         } else {
             currentMode = ProgramMode.NORMAL;
             transactionStack = null;
-            System.out.println("Transaction committed.");
+            ui.printlnSuccess("Transaction committed.");
         }
         return true;
     }
 
     public boolean handleExecuteBatch(Command command) {
         if (currentMode != ProgramMode.BATCH) {
-            System.out.println("Not in batch mode.");
+            ui.printlnError("Not in batch mode.");
         } else {
+            currentMode = ProgramMode.NORMAL;
             while (!batchQueue.isEmpty()) {
                 Command cmd = batchQueue.poll();
                 executeCommandDirectly(cmd);
             }
-            currentMode = ProgramMode.NORMAL;
             batchQueue = null;
-            System.out.println("Batch execution completed.");
+            ui.printlnSuccess("Batch executed.");
         }
         return true;
     }
 
     public boolean handleStartBatch(Command command) {
         if (currentMode == ProgramMode.BATCH) {
-            System.out.println("Already in batch mode.");
+            ui.printlnError("Already in batch mode.");
         } else {
             currentMode = ProgramMode.BATCH;
             batchQueue = new LinkedList<>();
-            System.out.println("Switched to batch mode.");
+            ui.printlnSuccess("Switched to batch mode.");
         }
         return true;
     }

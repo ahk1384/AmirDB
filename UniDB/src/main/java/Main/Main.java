@@ -1,26 +1,23 @@
 package Main;
 
 import Engine.ExecutionEngine;
-import Models.Student;
 import Parser.QueryParser;
-import Storage.FileReader;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        Scanner scanner = new Scanner(System.in);
+        ConsoleUI.init();
+        ConsoleUI ui = new ConsoleUI();
         ExecutionEngine engine = new ExecutionEngine();
-//        QueryParser.parseAndExecute("db.s.load-saved()", engine);
-        System.out.println("UniDB Shell (Java)\nType 'exit' to quit.");
+        ui.printBanner("UniDB Shell (Java)");
+        ui.printlnInfo("Type 'exit' to quit.");
         while (true) {
-            System.out.print("UniDB> ");
-            String input = scanner.nextLine();
-            if (input.equals("exit")) {
+            String input = ui.prompt("UniDB>");
+            if (input.equalsIgnoreCase("exit")) {
                 QueryParser.parseAndExecute("db.s.save()", engine);
-                System.out.println("Exiting UniDB Shell. Goodbye!");
+                ui.printBanner("Exiting UniDB Shell. Goodbye!");
+                ui.close();
                 break;
             }
             QueryParser.parseAndExecute(input, engine);
