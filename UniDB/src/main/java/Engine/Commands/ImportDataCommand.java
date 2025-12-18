@@ -20,4 +20,7 @@ public class ImportDataCommand {
     public static boolean execute(String filePath) {
         return sm.importData(filePath);
     }
+    public static boolean execute() {
+        return sm.importData();
+    }
 }

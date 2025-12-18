@@ -251,12 +251,21 @@ public class ExecutionEngine {
 
         }
         else {
-            if (ImportDataWithTransactionCommand.execute(command.getArgs()[2].substring(command.getArgs()[2].indexOf('(') + 2,
-                    command.getArgs()[2].lastIndexOf(')') - 1).trim()) != null) {
-                return ui.printlnSuccess("Import successful.");
+            if (command.getArgs()[2].equals("import()")) {
+                if (ImportDataCommand.execute()){
+                    return ui.printlnSuccess("Import successful.");
 
+                } else {
+                    return ui.printlnError("Import failed.");
+                }
             } else {
-                return ui.printlnError("Import failed.");
+                if (ImportDataWithTransactionCommand.execute(command.getArgs()[2].substring(command.getArgs()[2].indexOf('(') + 2,
+                        command.getArgs()[2].lastIndexOf(')') - 1).trim()) != null) {
+                    return ui.printlnSuccess("Import successful.");
+
+                } else {
+                    return ui.printlnError("Import failed.");
+                }
             }
         }
     }
