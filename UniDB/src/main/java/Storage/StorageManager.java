@@ -39,12 +39,14 @@ public class StorageManager {
     private final ArrayCollection arrayCollection = new ArrayCollection();
 
     public boolean insertOne(Models.Student student) {
-
-        if (ram.writeRecord(student.toStudentRecord())) {
-            return true;
+        if(ram.exists(student.getId())){
+            return false;
+        }else {
+            if (ram.writeRecord(student.toStudentRecord())) {
+                return true;
+            }
+            return false;
         }
-        return false;
-
 
 //        if (linkedListCollection.insertOne(student)) {
 //            return arrayCollection.insertOne(student);
@@ -80,6 +82,16 @@ public class StorageManager {
         return students;
     }
 
+    public boolean update(Student student){
+        if (ram.exists(student.getId())){
+            if (ram.writeRecord(student.toStudentRecord())){
+                return true ;
+            }
+            return false;
+        }else{
+            return false;
+        }
+    }
     public List<Command> importDataTransaction(String filePath) {
         List<Command> commands = new java.util.ArrayList<>();
         if (filePath == null || filePath.isEmpty()) {

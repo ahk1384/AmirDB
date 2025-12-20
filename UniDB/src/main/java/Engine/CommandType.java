@@ -18,6 +18,8 @@ public enum CommandType {
     LOAD_SAVED,
     COUNT,
     SUM,
+    UPDATE,
+    UPDATE_DIRECT,
     AVERAGE,
     START_BATCH,
     EXECUTE_BATCH,

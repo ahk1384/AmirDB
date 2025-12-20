@@ -14,7 +14,7 @@ public class UniDBServer {
     }
 
     public void start() throws Exception {
-        ServerSocket serverSocket = new ServerConfig().createServerSocket(5000);
+        ServerSocket serverSocket = new ServerConfig().createServerSocket(PORT);
         System.out.println("🚀 UniDB Server running on port " + PORT);
 
         while (true) {

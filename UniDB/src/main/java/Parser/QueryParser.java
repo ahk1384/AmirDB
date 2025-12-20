@@ -53,7 +53,19 @@ public class QueryParser {
                     command.setArgs(new String[]{db, collection, method + "(" + argsInside + ")", String.valueOf(id), name, String.valueOf(gpa)});
                     break;
                 }
-
+                case "update" :{
+                    Map<String, String> obj = parseObject(argsInside);
+                    if (obj == null) return engine.executeCommand(makeErrorCommand(command, "invalid object for update"));
+                    Integer id = parseIntFromMap(obj, "id");
+                    if (id == null) id = parseIntFromMap(obj, "_id");
+                    String name = getStringFromMap(obj, "name");
+                    Double gpa = parseDoubleFromMap(obj, "gpa");
+                    if (id == null || name == null || gpa == null) {
+                        return engine.executeCommand(makeErrorCommand(command, "update requires id, name, gpa"));
+                    }
+                    command.setArgs(new String[]{db, collection, method + "(" + argsInside + ")", String.valueOf(id), name, String.valueOf(gpa)});
+                    break;
+                }
                 case "deleteOne": {
                     if (argsInside.startsWith("{") && argsInside.endsWith("}")) {
                         Map<String, String> obj = parseObject(argsInside);
@@ -221,6 +233,7 @@ public class QueryParser {
             case "commit": return CommandType.COMMIT;
             case "rollback": return CommandType.ROLLBACK;
             case "exit": return CommandType.EXIT;
+            case "update" : return CommandType.UPDATE;
             default: return CommandType.UNKNOWN;
         }
     }

@@ -8,6 +8,8 @@ import java.io.Console;
 import java.io.IOException;
 import java.util.*;
 import Main.ConsoleUI;
+import org.controlsfx.dialog.CommandLinksDialog;
+
 public class ExecutionEngine {
 
     ConsoleUI ui = new ConsoleUI();
@@ -41,7 +43,8 @@ public class ExecutionEngine {
         commandHandlers.put(CommandType.COMMIT, this::handleCommit);
         commandHandlers.put(CommandType.START_BATCH, this::handleStartBatch);
         commandHandlers.put(CommandType.EXECUTE_BATCH, this::handleExecuteBatch);
-
+        commandHandlers.put(CommandType.UPDATE , this :: handleUpdate);
+        commandHandlers.put(CommandType.UPDATE_DIRECT,this:: handleUpdateDirect);
     }
 
     public String executeCommand(Command command) {
@@ -60,7 +63,7 @@ public class ExecutionEngine {
         if (handler != null) {
             try {
                 if (command.getCommandType() == CommandType.INSERT_ONE ||
-                        command.getCommandType() == CommandType.DELETE_ONE) {
+                        command.getCommandType() == CommandType.DELETE_ONE || command.getCommandType() == CommandType.UPDATE) {
                     if (command.getCommandType() == CommandType.INSERT_ONE) {
                         Command directCommand = new Command(command.getRoot(), command.getCollection(),
                                 CommandType.INSERT_ONE_DIRECT,
@@ -73,6 +76,11 @@ public class ExecutionEngine {
                                 command.getArgs());
                         handler = commandHandlers.get(CommandType.DELETE_ONE_DIRECT);
                         return handler.handle(directCommand);
+                    } else if (command.getCommandType() == CommandType.UPDATE) {
+                        Command directCommand = new Command(command.getRoot(), command.getCollection(),
+                                CommandType.UPDATE_DIRECT,
+                                command.getArgs());
+                        handler = commandHandlers.get(CommandType.UPDATE_DIRECT);
                     }
                 }
                 return handler.handle(command);
@@ -230,6 +238,43 @@ public class ExecutionEngine {
         return ui.printlnInfo("Average: " + avg);
     }
 
+    public String handleUpdateDirect(Command command) {
+        if (UpdateCommand.execute(new Student(Long.parseLong(command.getArgs()[3]), command.getArgs()[4], Double.parseDouble(command.getArgs()[5])))) {
+            return ui.printlnSuccess("Update successful.");
+        } else {
+            return ui.printlnError("Update failed.");
+        }
+    }
+
+    public String handleUpdate(Command command){
+        if (currentMode == ProgramMode.TRANSACTION) {
+            Student s = sm.findByID(Long.parseLong(command.getArgs()[3]));
+            if (s != null) {
+                String result = executeCommandDirectly(command);
+                if (result != null) {
+                    Command tmp = new Command(command.getRoot(), command.getCollection(), CommandType.UPDATE,
+                            new String[]{
+                                    command.getArgs()[0],
+                                    command.getArgs()[1],
+                                    "update",
+                                    String.valueOf(s.getId()),
+                                    s.getName(),
+                                    String.valueOf(s.getGpa())
+                            });
+                    transactionStack.push(tmp);
+                }
+                return result;
+            } else {
+                return ui.printlnError("Update failed. Student not found.");
+            }
+        } else if (currentMode == ProgramMode.BATCH) {
+            batchQueue.add(command);
+            return ui.printlnSuccess("Command added to batch queue.");
+        } else {
+            return executeCommandDirectly(command);
+        }
+    }
+
     public String handleImportData(Command command) {
         if (currentMode == ProgramMode.TRANSACTION) {
             List<Command> rollbackCommands = ImportDataWithTransactionCommand.execute(command.getArgs()[2].substring(command.getArgs()[2].indexOf('(') + 2,
@@ -303,7 +348,13 @@ public class ExecutionEngine {
             return ui.printlnError("Not in transaction mode.");
         } else {
             StringBuilder result = new StringBuilder();
-            int count = command.getArgs().length > 3 ? Integer.parseInt(command.getArgs()[3]) : -1;
+            long count ;
+            if (command.getArgs()[3] != ""){
+                count = Long.parseLong(command.getArgs()[3]);
+            }
+            else{
+                count = transactionStack.count();
+            }
             while (!transactionStack.isEmpty() && (count != 0)) {
                 Command cmd = transactionStack.pop();
                 result.append(executeCommandDirectly(cmd));
