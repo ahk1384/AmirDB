@@ -2,19 +2,24 @@ package Client;
 
 import Main.ConsoleUI;
 import Shared.*;
+
 import java.io.*;
 import java.net.Socket;
+import java.util.Objects;
 import java.util.Scanner;
 
 public class UniDBClient {
     private Socket socket;
     private ObjectOutputStream out;
     private ObjectInputStream in;
+    private boolean Authorize;
+
     public UniDBClient() {
     }
+
     public void connect(String host, int port) throws IOException {
         socket = new Socket(host, port);
-        out = new ObjectOutputStream(socket. getOutputStream());
+        out = new ObjectOutputStream(socket.getOutputStream());
         in = new ObjectInputStream(socket.getInputStream());
         System.out.println("✅ Connected to server!");
     }
@@ -25,21 +30,48 @@ public class UniDBClient {
         ui.printBanner("UniDB Client (Network Mode)");
         ui.printlnInfo("Type 'exit' to quit.");
         Scanner scanner = new Scanner(System.in);
+        Response response2 = (Response) in.readObject();
+        if (response2.isSuccess() && Objects.equals(response2.getMessage(), "Accepted")) {
+            Authorize = true;
+        }
         while (true) {
-            ui.prompt("UniDB>");
-            String input = scanner.nextLine().trim();
-            if (input.equalsIgnoreCase("exit")) {
-                out.writeObject(new Request(MessageType.EXIT, input));
+            while (!Authorize) {
+                ui.prompt("Enter the Password : ");
+                String input = scanner.nextLine().trim();
+                if (input.equalsIgnoreCase("exit")) {
+                    out.writeObject(new Request(MessageType.EXIT, input));
+                    Response response = (Response) in.readObject();
+                    ui.printBanner(response.getMessage());
+                    break;
+                }
+                out.writeObject(new Request(MessageType.AUTH, input));
                 Response response = (Response) in.readObject();
-                ui.printBanner(response.getMessage());
+                if (response.isSuccess() && Objects.equals(response.getMessage(), "Accepted")) {
+                    ui.printlnSuccess("Correct Password you now logged in !");
+                    Authorize = true;
+                    break;
+                } else {
+                    ui.printlnError("Wrong Passwrod");
+                }
+            }
+            if (Authorize) {
+                ui.prompt("UniDB>");
+                String input = scanner.nextLine().trim();
+                if (input.equalsIgnoreCase("exit")) {
+                    out.writeObject(new Request(MessageType.EXIT, input));
+                    Response response = (Response) in.readObject();
+                    ui.printBanner(response.getMessage());
+                    break;
+                }
+
+                out.writeObject(new Request(MessageType.QUERY, input));
+                Response response = (Response) in.readObject();
+
+                System.out.println(response.getMessage());
+            } else {
                 break;
             }
-
-            out.writeObject(new Request(MessageType.QUERY, input));
-            Response response = (Response) in.readObject();
-            System.out.println(response.getMessage());
         }
-
         socket.close();
         ui.close();
     }
