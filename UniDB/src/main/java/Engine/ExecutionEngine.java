@@ -316,11 +316,22 @@ public class ExecutionEngine {
     }
 
     public String handleFilter(Command command) {
-        String[] conditions = command.getArgs()[2].split(",");
-        String field = conditions[0].substring(conditions[0].indexOf('(') + 2, conditions[0].lastIndexOf('"')).trim();
-        String value = conditions[1].substring(1, conditions[1].lastIndexOf(')') - 1).trim();
-        ui.printlnInfo("Filtered Students:");
-        List<Student> results = FilterByFieldCommand.execute(field, value);
+        List<Student> results;
+        if (command.getArgs()[3] != ""){
+            String[] conditions = command.getArgs()[2].split(",");
+            String field = conditions[0].substring(conditions[0].indexOf('(') + 2, conditions[0].lastIndexOf('"')).trim();
+            String start = conditions[1];
+            String end = conditions[2].substring(0, conditions[2].lastIndexOf(')')).trim();
+            ui.printlnInfo("Filtered Students:");
+            results = FilterByFieldCommand.execute(field, start,end);
+        }else{
+            String[] conditions = command.getArgs()[2].split(",");
+            String field = conditions[0].substring(conditions[0].indexOf('(') + 2, conditions[0].lastIndexOf('"')).trim();
+            String value = conditions[1].substring(1, conditions[1].lastIndexOf(')') - 1).trim();
+            ui.printlnInfo("Filtered Students:");
+            results = FilterByFieldCommand.execute(field, value);
+        }
+
         List<String[]> rows = new ArrayList<>();
         for (Student st : results) {
             rows.add(new String[]{String.valueOf(st.getId()), st.getName(), String.valueOf(st.getGpa())});

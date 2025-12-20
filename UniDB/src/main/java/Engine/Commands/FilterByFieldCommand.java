@@ -20,5 +20,8 @@ public class FilterByFieldCommand {
     public static List<Student> execute(String fieldName, Object value) {
         return sm.filterByField(fieldName, value.toString());
     }
+    public static List<Student> execute(String fieldName, String start,String end){
+        return sm.filterByField(fieldName,start,end);
+    }
 }
 

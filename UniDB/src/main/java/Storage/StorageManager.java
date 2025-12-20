@@ -5,6 +5,7 @@ import Engine.CommandType;
 import Models.Student;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class StorageManager {
@@ -168,6 +169,15 @@ public class StorageManager {
         }
         return students;
 //        return arrayCollection.filter(fieldName, value);
+    }
+
+    public List<Student> filterByField(String fieldName,String start,String end){
+        List<StudentRecord> records = ram.filterByFiled(fieldName,start,end);
+        List<Student> students = new ArrayList<>();
+        for(StudentRecord st : records){
+            students.add(st.ToStudent());
+        }
+        return students;
     }
 
 

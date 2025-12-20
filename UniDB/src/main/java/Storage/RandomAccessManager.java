@@ -222,7 +222,38 @@ public class RandomAccessManager {
         }
         return results;
     }
-
+    public List<StudentRecord> filterByFiled(String fieldName,String start,String end){
+        ensureFileOpen();
+        List<StudentRecord> results = new ArrayList<>();
+        try {
+            long fileLen = file.length();
+            long pos = 0;
+            while (pos + StudentRecord.RECORD_SIZE <= fileLen) {
+                file.seek(pos);
+                long id = file.readLong();
+                String name = readString(file, StudentRecord.NAME_SIZE);
+                double gpa = file.readDouble();
+                if (id != -1L) {
+                    if ("name".equals(fieldName) && name.toLowerCase().compareTo(start.toLowerCase()) >= 0 && name.toLowerCase().compareTo(end.toLowerCase()) <= 0) {
+                        results.add(new StudentRecord(id, name, gpa));
+                    } else if ("gpa".equals(fieldName)) {
+                        try {
+                            double v = Double.parseDouble(start);
+                            double f = Double.parseDouble(end);
+                            if (Double.compare(gpa, v) >=0 && Double.compare(gpa,f) <=0) {
+                                results.add(new StudentRecord(id, name, gpa));
+                            }
+                        } catch (NumberFormatException ignore) {
+                        }
+                    }
+                }
+                pos += StudentRecord.RECORD_SIZE;
+            }
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
+        return results;
+    }
     private String readString(RandomAccessFile file, int size) {
         StringBuilder sb = new StringBuilder(size);
         try {
