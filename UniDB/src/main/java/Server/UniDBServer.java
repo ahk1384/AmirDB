@@ -1,6 +1,7 @@
 package Server;
 
 import Engine.ExecutionEngine;
+import Main.ConsoleUI;
 
 import java.io.Console;
 import java.io.IOException;
@@ -17,29 +18,29 @@ public class UniDBServer {
     }
 
     public void start() throws Exception {
+        ConsoleUI ui = new ConsoleUI();
         Scanner sc = new Scanner(System.in);
         ServerSocket serverSocket;
         String pass;
         while (true){
-            System.out.print("do you want to enabel the login with password [Y/N]:");
+            ui.printInfo("do you want to enabel the login with password [Y/N]:");
             String status = sc.nextLine();
             if (status.toLowerCase().equals("y")){
-                System.out.print("Enter Your Password : ");
+                ui.prompt("Enter Your Password : ");
                 pass = sc.nextLine();
+                ui.printlnSuccess("Your Password is set !");
                 serverSocket = new ServerConfig().createServerSocket(PORT,pass);
-                System.out.println("Your Password is set !");
                 break;
             }
             else{
-                System.out.println("Without Password Set !");
+                ui.printlnSuccess("Without Password Set !");
                 serverSocket = new ServerConfig().createServerSocket(PORT);
                 break;
             }
         }
-        System.out.println("🚀 UniDB Server running on port " + PORT);
         while (true) {
             Socket client = serverSocket.accept();
-            System.out.println("✅ Client connected:  " + client.getInetAddress());
+            ui.printlnSuccess("Client connected: " + client.getInetAddress());
             new Thread(new ClientHandler(client, engine)).start();
         }
     }

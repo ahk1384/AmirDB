@@ -71,6 +71,12 @@ public class ConsoleUI {
         promptBuilder.append(BOLD + BRIGHT_BLACK + "-> " + CYAN + msg+ RESET);
         return promptBuilder.toString();
     }
+    public String printInfo(String msg) {
+        StringBuilder promptBuilder = new StringBuilder();
+        System.out.print(BOLD + BRIGHT_BLACK + "-> " + CYAN + msg+ RESET);
+        promptBuilder.append(BOLD + BRIGHT_BLACK + "-> " + CYAN + msg+ RESET);
+        return promptBuilder.toString();
+    }
 
     public String printlnSuccess(String msg) {
         StringBuilder promptBuilder = new StringBuilder();

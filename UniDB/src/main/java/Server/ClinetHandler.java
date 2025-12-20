@@ -1,6 +1,7 @@
 package Server;
 
 import Engine.ExecutionEngine;
+import Main.ConsoleUI;
 import Parser.QueryParser;
 import Shared.*;
 import java.io.*;
@@ -20,6 +21,7 @@ class ClientHandler implements Runnable {
 
     @Override
     public void run() {
+        ConsoleUI ui = new ConsoleUI();
         try {
             ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
             ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
@@ -33,9 +35,11 @@ class ClientHandler implements Runnable {
                 if (request.getType() == MessageType.AUTH){
                     if (request.getQuery().equals(Pass) || Pass == null){
                         out.writeObject(new Response(true,"Accepted"));
+                        ui.printlnSuccess("New USer Logged in ! ");
                     }
                     else{
                         out.writeObject(new Response(false,"Wrong Password"));
+                        ui.printlnError("Wrong Password !");
                     }
                 }
                 else if (request.getType() == MessageType.EXIT) {
