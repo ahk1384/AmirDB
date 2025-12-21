@@ -45,6 +45,7 @@ public class ExecutionEngine {
         commandHandlers.put(CommandType.EXECUTE_BATCH, this::handleExecuteBatch);
         commandHandlers.put(CommandType.UPDATE , this :: handleUpdate);
         commandHandlers.put(CommandType.UPDATE_DIRECT,this:: handleUpdateDirect);
+        commandHandlers.put(CommandType.DELETE_ALL,this:: handleDeleteAll);
     }
 
     public String executeCommand(Command command) {
@@ -163,7 +164,41 @@ public class ExecutionEngine {
             return executeCommandDirectly(command);
         }
     }
-
+    public String handleDeleteAll(Command command) {
+        if (currentMode == ProgramMode.TRANSACTION) {
+            List<Student> allStudents = sm.findAll();
+            String result ;
+            if (DeleteAllCommand.execute()){
+                result = ui.printlnSuccess("All records deleted successfully.");
+            } else {
+                return ui.printlnError("Delete all failed.");
+            }
+            if (result != null) {
+                for (Student s : allStudents) {
+                    Command tmp = new Command(command.getRoot(), command.getCollection(), CommandType.INSERT_ONE,
+                            new String[]{
+                                    command.getArgs()[0],
+                                    command.getArgs()[1],
+                                    "insertOne",
+                                    String.valueOf(s.getId()),
+                                    s.getName(),
+                                    String.valueOf(s.getGpa())
+                            });
+                    transactionStack.push(tmp);
+                }
+            }
+            return result;
+        } else if (currentMode == ProgramMode.BATCH) {
+            batchQueue.add(command);
+            return ui.printlnSuccess("Command added to batch queue.");
+        } else {
+            if(DeleteAllCommand.execute()){
+                return ui.printlnSuccess("All records deleted successfully.");
+            } else {
+                return ui.printlnError("Delete all failed.");
+            }
+        }
+    }
     public String handleSave(Command command) {
         ui.printlnInfo("Saving data ...");
         if (SaveDataCommand.execute()) {
@@ -368,7 +403,7 @@ public class ExecutionEngine {
             }
             while (!transactionStack.isEmpty() && (count != 0)) {
                 Command cmd = transactionStack.pop();
-                result.append(executeCommandDirectly(cmd));
+                result.append(executeCommandDirectly(cmd)+"\n");
                 if (count > 0) {
                     count--;
                 }

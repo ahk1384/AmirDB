@@ -23,6 +23,7 @@ public enum CommandType {
     AVERAGE,
     START_BATCH,
     EXECUTE_BATCH,
+    DELETE_ALL,
     BEGIN_TRANSACTION,
     UNKNOWN
 }

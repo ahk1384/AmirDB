@@ -15,6 +15,7 @@ public class RandomAccessManager {
     private Map<Long, Long> indexMap;
     private long nextPosition;
 
+
     public RandomAccessManager() {
         try {
             file = new RandomAccessFile(FILE_NAME, "rw");
@@ -296,6 +297,18 @@ public class RandomAccessManager {
                 file.close();
                 file = null;
             }
+        }
+    }
+    public boolean deleteAll() {
+        ensureFileOpen();
+        try {
+            file.setLength(0);
+            indexMap.clear();
+            nextPosition = 0;
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
         }
     }
 }

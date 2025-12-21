@@ -48,11 +48,6 @@ public class StorageManager {
             }
             return false;
         }
-
-//        if (linkedListCollection.insertOne(student)) {
-//            return arrayCollection.insertOne(student);
-//        }
-//        return false;
     }
 
     public boolean deleteOne(Long id) {
@@ -60,10 +55,6 @@ public class StorageManager {
             return true;
         }
         return false;
-//        if (linkedListCollection.deleteOne(id)) {
-//            return arrayCollection.deleteOne(id);
-//        }
-//        return false;
     }
 
     public Models.Student findByID(Long id) {
@@ -72,7 +63,6 @@ public class StorageManager {
             return record;
         }
         return null;
-//        return linkedListCollection.findByID(id);
     }
 
     public List<Student> findAll() {
@@ -147,18 +137,15 @@ public class StorageManager {
     }
 
     public long count() {
-//        return arrayCollection.count();
         return ram.getRecordCount();
     }
 
     public double sumOfField(String fieldName) {
         return ram.sumOfFiled(fieldName);
-//        return arrayCollection.sumOfField(fieldName);
     }
 
     public double averageOfField(String fieldName) {
         return ram.averageOfFiled(fieldName);
-//        return arrayCollection.averageOfField(fieldName);
     }
 
     public List<Student> filterByField(String fieldName, String value) {
@@ -168,7 +155,6 @@ public class StorageManager {
             students.add(record.toStudent());
         }
         return students;
-//        return arrayCollection.filter(fieldName, value);
     }
 
     public List<Student> filterByField(String fieldName,String start,String end){
@@ -179,7 +165,9 @@ public class StorageManager {
         }
         return students;
     }
-
+    public boolean deleteAll(){
+        return ram.deleteAll();
+    }
 
 
 }

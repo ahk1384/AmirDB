@@ -234,6 +234,7 @@ public class QueryParser {
             case "rollback": return CommandType.ROLLBACK;
             case "exit": return CommandType.EXIT;
             case "update" : return CommandType.UPDATE;
+            case "deleteAll": return CommandType.DELETE_ALL;
             default: return CommandType.UNKNOWN;
         }
     }
