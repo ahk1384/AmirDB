@@ -17,7 +17,7 @@ import java.util.Objects;
 public class FileWriter {
     private static String writeFile(String filePath,String content) {
         Path path = Paths.get("src/main/java/"+filePath);
-        try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8, StandardOpenOption.CREATE)) {
+        try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE)) {
             writer.write(content);
         } catch (IOException e) {
             System.out.println("Error writing file: " + e.getMessage());

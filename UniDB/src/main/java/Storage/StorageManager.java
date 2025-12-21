@@ -75,24 +75,6 @@ public class StorageManager {
         }
         return commands;
     }
-
-//    public List<Command> deleteAll(){
-//        List<Command> commands = new ArrayList<>();
-//        List<Student> students = findAll();
-//        for (Student student : students) {
-//            if (deleteOne(student.getId())) {
-//                commands.add(new Command("db", "s", CommandType.INSERT_ONE, new String[]{
-//                        "db",
-//                        "s",
-//                        "insertOne",
-//                        student.toString()
-//                }));
-//            } else {
-//                return null;
-//            }
-//        }
-//        return commands;
-//    }
 //    public boolean importData() {
 //        List<Student> students = FileReader.loadFile();
 //        if (students.isEmpty()) {

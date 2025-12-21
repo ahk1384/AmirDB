@@ -78,7 +78,7 @@ public class ExecutionEngine {
                         handler = commandHandlers.get(CommandType.DELETE_ONE_DIRECT);
                         return handler.handle(directCommand);
                     }else if (command.getCommandType() == CommandType.DELETE_ALL) {
-                        List<Student> students = sm.findAll();
+                        List<Student> students = sm.findAll().stream().toList();
                         for (Student s : students) {
                             Command directCommand = new Command(command.getRoot(), command.getCollection(),
                                     CommandType.DELETE_ONE_DIRECT,

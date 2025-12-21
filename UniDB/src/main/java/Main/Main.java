@@ -14,6 +14,7 @@ public class Main {
         ui.printBanner("UniDB Shell (Java)");
         ui.printlnInfo("Type 'exit' to quit.");
         Scanner sc = new Scanner(System.in);
+        QueryParser.parseAndExecute("db.s.load-saved()", engine);
         while (true) {
             ui.prompt("UniDB>");
             String input = sc.nextLine().trim();
