@@ -1,7 +1,5 @@
 package Models;
 
-import Storage.StudentRecord;
-
 public class Student {
     public long id;
     public String name;
@@ -32,7 +30,5 @@ public class Student {
         this.name = name;
         this.gpa = gpa;
     }
-    public StudentRecord toStudentRecord() {
-        return new StudentRecord(id, name, gpa);
-    }
+
 }
