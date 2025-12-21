@@ -44,7 +44,7 @@ public class ExecutionEngine {
         commandHandlers.put(CommandType.START_BATCH, this::handleStartBatch);
         commandHandlers.put(CommandType.EXECUTE_BATCH, this::handleExecuteBatch);
         commandHandlers.put(CommandType.UPDATE , this :: handleUpdate);
-//        commandHandlers.put(CommandType.UPDATE_DIRECT,this:: handleUpdateDirect);
+        commandHandlers.put(CommandType.UPDATE_DIRECT,this:: handleUpdateDirect);
         commandHandlers.put(CommandType.DELETE_ALL , this :: handleDeleteAll);
     }
 
@@ -280,13 +280,13 @@ public class ExecutionEngine {
         return ui.printlnInfo("Average: " + avg);
     }
 
-//    public String handleUpdateDirect(Command command) {
-//        if (UpdateCommand.execute(new Student(Long.parseLong(command.getArgs()[3]), command.getArgs()[4], Double.parseDouble(command.getArgs()[5])))) {
-//            return ui.printlnSuccess("Update successful.");
-//        } else {
-//            return ui.printlnError("Update failed.");
-//        }
-//    }
+    public String handleUpdateDirect(Command command) {
+        if (UpdateCommand.execute(new Student(Long.parseLong(command.getArgs()[3]), command.getArgs()[4], Double.parseDouble(command.getArgs()[5])))) {
+            return ui.printlnSuccess("Update successful.");
+        } else {
+            return ui.printlnError("Update failed.");
+        }
+    }
 
     public String handleUpdate(Command command){
         if (currentMode == ProgramMode.TRANSACTION) {
@@ -338,14 +338,6 @@ public class ExecutionEngine {
 
         }
         else {
-//            if (command.getArgs()[2].equals("import()")) {
-//                if (ImportDataCommand.execute()){
-//                    return ui.printlnSuccess("Import successful.");
-//
-//                } else {
-//                    return ui.printlnError("Import failed.");
-//                }
-//            } else {
                 if (ImportDataWithTransactionCommand.execute(command.getArgs()[2].substring(command.getArgs()[2].indexOf('(') + 2,
                         command.getArgs()[2].lastIndexOf(')') - 1).trim()) != null) {
                     return ui.printlnSuccess("Import successful.");
@@ -353,26 +345,16 @@ public class ExecutionEngine {
                 } else {
                     return ui.printlnError("Import failed.");
                 }
-//            }
         }
     }
 
     public String handleFilter(Command command) {
         List<Student> results;
-//        if (command.getArgs()[3] != ""){
-//            String[] conditions = command.getArgs()[2].split(",");
-//            String field = conditions[0].substring(conditions[0].indexOf('(') + 2, conditions[0].lastIndexOf('"')).trim();
-//            String start = conditions[1];
-//            String end = conditions[2].substring(0, conditions[2].lastIndexOf(')')).trim();
-//            ui.printlnInfo("Filtered Students:");
-//            results = FilterByFieldCommand.execute(field, start,end);
-//        }else{
             String[] conditions = command.getArgs()[2].split(",");
             String field = conditions[0].substring(conditions[0].indexOf('(') + 2, conditions[0].lastIndexOf('"')).trim();
             String value = conditions[1].substring(1, conditions[1].lastIndexOf(')') - 1).trim();
             ui.printlnInfo("Filtered Students:");
             results = FilterByFieldCommand.execute(field, value);
-//        }
 
         List<String[]> rows = new ArrayList<>();
         for (Student st : results) {
