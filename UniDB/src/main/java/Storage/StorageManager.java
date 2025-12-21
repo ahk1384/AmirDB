@@ -75,18 +75,6 @@ public class StorageManager {
         }
         return commands;
     }
-//    public boolean importData() {
-//        List<Student> students = FileReader.loadFile();
-//        if (students.isEmpty()) {
-//            return false;
-//        }
-//        for (Models.Student student : students) {
-//            if (!insertOne(student)) {
-//                return false;
-//            }
-//        }
-//        return true;
-//    }
     public boolean importData(String filePath) {
         if (filePath == null || filePath.isEmpty()) {
             return false;
