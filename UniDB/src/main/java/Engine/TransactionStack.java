@@ -20,4 +20,8 @@ public class TransactionStack {
     public boolean isEmpty() {
         return commandStack.isEmpty();
     }
+
+    public int count() {
+        return commandStack.size();
+    }
 }

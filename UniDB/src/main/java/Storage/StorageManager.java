@@ -85,14 +85,8 @@ public class StorageManager {
     }
 
     public boolean update(Student student){
-        if (ram.exists(student.getId())){
-            if (ram.writeRecord(student.toStudentRecord())){
-                return true ;
-            }
-            return false;
-        }else{
-            return false;
-        }
+        arrayCollection.update(student);
+        return linkedListCollection.update(student);
     }
     public List<Command> importDataTransaction(String filePath) {
         List<Command> commands = new java.util.ArrayList<>();
@@ -135,18 +129,18 @@ public class StorageManager {
 //        }
 //        return commands;
 //    }
-    public boolean importData() {
-        List<Student> students = FileReader.loadFile();
-        if (students.isEmpty()) {
-            return false;
-        }
-        for (Models.Student student : students) {
-            if (!insertOne(student)) {
-                return false;
-            }
-        }
-        return true;
-    }
+//    public boolean importData() {
+//        List<Student> students = FileReader.loadFile();
+//        if (students.isEmpty()) {
+//            return false;
+//        }
+//        for (Models.Student student : students) {
+//            if (!insertOne(student)) {
+//                return false;
+//            }
+//        }
+//        return true;
+//    }
     public boolean importData(String filePath) {
         if (filePath == null || filePath.isEmpty()) {
             return false;

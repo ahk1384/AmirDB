@@ -73,6 +73,19 @@ public class LinkedListCollection implements Collection {
         return null;
     }
 
+    @Override
+    public boolean update(Student student) {
+        Node current = head;
+        while (current != null) {
+            if (current.data.getId() == student.getId()) {
+                current.data = student;
+                return true;
+            }
+            current = current.next;
+        }
+        return false;
+    }
+
     public List<Student> findAll() {
         List<Student> students = new ArrayList<>();
         Node current = head;

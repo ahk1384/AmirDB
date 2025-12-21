@@ -17,6 +17,7 @@ public enum CommandType {
     SAVE_AS,
     UPDATE,
     LOAD_SAVED,
+    UPDATE_DIRECT,
     COUNT,
     SUM,
     AVERAGE,
