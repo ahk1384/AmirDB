@@ -15,6 +15,7 @@ public enum CommandType {
     FILTER,
     SAVE,
     SAVE_AS,
+    UPDATE,
     LOAD_SAVED,
     COUNT,
     SUM,
@@ -22,5 +23,6 @@ public enum CommandType {
     START_BATCH,
     EXECUTE_BATCH,
     BEGIN_TRANSACTION,
+    DELETE_ALL,
     UNKNOWN
 }

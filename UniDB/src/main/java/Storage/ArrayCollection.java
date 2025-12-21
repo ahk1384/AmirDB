@@ -36,6 +36,34 @@ public class ArrayCollection implements Collection {
         }
         return null;
     }
+
+    public boolean update(Student student) {
+        for (int i = 0; i < students.size(); i++) {
+            if (students.get(i).getId() == student.getId()) {
+                students.set(i, student);
+                return true;
+            }
+        }
+        return false;
+    }
+    public ArrayList<Student> filterByfield(String fieldName, String start , String end) {
+        ArrayList<Student> result = new ArrayList<>();
+        for (Student student : students) {
+            switch (fieldName) {
+                case "name":
+                    if (student.getName().compareTo(start) >= 0 && student.getName().compareTo(end) <= 0) {
+                        result.add(student);
+                    }
+                    break;
+                case "gpa":
+                    if (student.getGpa() >= Double.parseDouble(start) && student.getGpa() <= Double.parseDouble(end)) {
+                        result.add(student);
+                    }
+                    break;
+            }
+        }
+        return result;
+    }
     public ArrayList<Student> findAll() {
         return students;
     }

@@ -5,6 +5,7 @@ import Engine.CommandType;
 import Models.Student;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class StorageManager {
@@ -39,47 +40,60 @@ public class StorageManager {
     private final ArrayCollection arrayCollection = new ArrayCollection();
 
     public boolean insertOne(Models.Student student) {
+//        if(ram.exists(student.getId())){
+//            return false;
+//        }else {
+//            if (ram.writeRecord(student.toStudentRecord())) {
+//                return true;
+//            }
+//            return false;
+//        }
 
-        if (ram.writeRecord(student.toStudentRecord())) {
-            return true;
+        if (linkedListCollection.insertOne(student)) {
+            return arrayCollection.insertOne(student);
         }
         return false;
-
-
-//        if (linkedListCollection.insertOne(student)) {
-//            return arrayCollection.insertOne(student);
-//        }
-//        return false;
     }
 
     public boolean deleteOne(Long id) {
-        if (ram.deleteRecordById(id)) {
-            return true;
-        }
-        return false;
-//        if (linkedListCollection.deleteOne(id)) {
-//            return arrayCollection.deleteOne(id);
+//        if (ram.deleteRecordById(id)) {
+//            return true;
 //        }
 //        return false;
+        if (linkedListCollection.deleteOne(id)) {
+            return arrayCollection.deleteOne(id);
+        }
+        return false;
     }
 
     public Models.Student findByID(Long id) {
-        Student record = ram.readRecordByID(id).toStudent();
-        if (record != null) {
-            return record;
-        }
-        return null;
-//        return linkedListCollection.findByID(id);
+//        Student record = ram.readRecordByID(id).toStudent();
+//        if (record != null) {
+//            return record;
+//        }
+//        return null;
+        return linkedListCollection.findByID(id);
     }
 
     public List<Student> findAll() {
         List<Student> students = new java.util.ArrayList<>();
-        for (StudentRecord record : ram.readAllRecord()) {
-            students.add(record.toStudent());
-        }
+//        for (StudentRecord record : ram.readAllRecord()) {
+//            students.add(record.toStudent());
+//        }
+        students = arrayCollection.findAll();
         return students;
     }
 
+    public boolean update(Student student){
+        if (ram.exists(student.getId())){
+            if (ram.writeRecord(student.toStudentRecord())){
+                return true ;
+            }
+            return false;
+        }else{
+            return false;
+        }
+    }
     public List<Command> importDataTransaction(String filePath) {
         List<Command> commands = new java.util.ArrayList<>();
         if (filePath == null || filePath.isEmpty()) {
@@ -104,6 +118,35 @@ public class StorageManager {
         return commands;
     }
 
+//    public List<Command> deleteAll(){
+//        List<Command> commands = new ArrayList<>();
+//        List<Student> students = findAll();
+//        for (Student student : students) {
+//            if (deleteOne(student.getId())) {
+//                commands.add(new Command("db", "s", CommandType.INSERT_ONE, new String[]{
+//                        "db",
+//                        "s",
+//                        "insertOne",
+//                        student.toString()
+//                }));
+//            } else {
+//                return null;
+//            }
+//        }
+//        return commands;
+//    }
+    public boolean importData() {
+        List<Student> students = FileReader.loadFile();
+        if (students.isEmpty()) {
+            return false;
+        }
+        for (Models.Student student : students) {
+            if (!insertOne(student)) {
+                return false;
+            }
+        }
+        return true;
+    }
     public boolean importData(String filePath) {
         if (filePath == null || filePath.isEmpty()) {
             return false;
@@ -122,28 +165,38 @@ public class StorageManager {
     }
 
     public long count() {
-//        return arrayCollection.count();
-        return ram.getRecordCount();
+        return arrayCollection.count();
+//        return ram.getRecordCount();
     }
 
     public double sumOfField(String fieldName) {
-        return ram.sumOfFiled(fieldName);
-//        return arrayCollection.sumOfField(fieldName);
+//        return ram.sumOfFiled(fieldName);
+        return arrayCollection.sumOfField(fieldName);
     }
 
     public double averageOfField(String fieldName) {
-        return ram.averageOfFiled(fieldName);
-//        return arrayCollection.averageOfField(fieldName);
+//        return ram.averageOfFiled(fieldName);
+        return arrayCollection.averageOfField(fieldName);
     }
 
     public List<Student> filterByField(String fieldName, String value) {
-        List <StudentRecord> records = ram.filterByFiled(fieldName, value);
-        List<Student> students = new java.util.ArrayList<>();
-        for (StudentRecord record : records) {
-            students.add(record.toStudent());
-        }
-        return students;
-//        return arrayCollection.filter(fieldName, value);
+//        List <StudentRecord> records = ram.filterByFiled(fieldName, value);
+//        List<Student> students = new java.util.ArrayList<>();
+//        for (StudentRecord record : records) {
+//            students.add(record.toStudent());
+//        }
+//        return students;
+        return arrayCollection.filter(fieldName, value);
+    }
+
+    public List<Student> filterByField(String fieldName,String start,String end){
+        return arrayCollection.filterByfield(fieldName, start, end);
+//        List<StudentRecord> records = ram.filterByFiled(fieldName,start,end);
+//        List<Student> students = new ArrayList<>();
+//        for(StudentRecord st : records){
+//            students.add(st.ToStudent());
+//        }
+//        return students;
     }
 
 
