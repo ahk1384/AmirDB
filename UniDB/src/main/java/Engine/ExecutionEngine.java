@@ -434,7 +434,7 @@ public class ExecutionEngine {
             StringBuilder result = new StringBuilder();
             while (!batchQueue.isEmpty()) {
                 Command cmd = batchQueue.poll();
-                result.append(executeCommandDirectly(cmd));
+                result.append(executeCommandDirectly(cmd)+"\n");
             }
             batchQueue = null;
 

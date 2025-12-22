@@ -2,8 +2,9 @@ package Storage;
 
 import Engine.Command;
 import Engine.CommandType;
+import Engine.ExecutionEngine;
 import Models.Student;
-
+import Engine.ExecutionEngine.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -58,9 +59,9 @@ public class StorageManager {
     }
 
     public Models.Student findByID(Long id) {
-        Student record = ram.readRecordByID(id).toStudent();
+        StudentRecord record = ram.readRecordByID(id);
         if (record != null) {
-            return record;
+            return record.toStudent();
         }
         return null;
     }
@@ -93,15 +94,32 @@ public class StorageManager {
             return null;
         }
         for (Models.Student student : students) {
-            if (!insertOne(student)) {
-                return null;
-            } else {
-                commands.add(new Command("db", "s", CommandType.DELETE_ONE, new String[]{
-                        "db",
-                        "s",
-                        "deleteOne",
-                        String.valueOf(student.getId())
-                }));
+            if (findByID(student.id) != null){
+                Models.Student st = findByID(student.getId());
+                if (!update(student)){
+                    return null;
+                }
+                else{
+                    commands.add(new Command("db", "s", CommandType.UPDATE, new String[]{
+                            "db",
+                            "s",
+                            "update",
+                            String.valueOf(st.getId()),
+                            student.getName(),
+                            String.valueOf(st.getGpa())
+                    }));
+                }
+            }else{
+                if (!insertOne(student)){
+                    return null;
+                }else{
+                    commands.add(new Command("db", "s", CommandType.DELETE_ONE, new String[]{
+                            "db",
+                            "s",
+                            "deleteOne",
+                            String.valueOf(student.getId())
+                    }));
+                }
             }
         }
         return commands;
@@ -113,8 +131,14 @@ public class StorageManager {
             return false;
         }
         for (Models.Student student : students) {
-            if (!insertOne(student)) {
-                return false;
+            if (findByID(student.id) != null){
+                if (!update(student)){
+                    return false;
+                }
+            }else{
+                if (!insertOne(student)){
+                    return false;
+                }
             }
         }
         return true;
@@ -129,8 +153,14 @@ public class StorageManager {
             return false;
         }
         for (Models.Student student : students) {
-            if (!insertOne(student)) {
-                return false;
+            if (findByID(student.id) != null){
+                if (!update(student)){
+                    return false;
+                }
+            }else{
+                if (!insertOne(student)){
+                    return false;
+                }
             }
         }
         return true;
