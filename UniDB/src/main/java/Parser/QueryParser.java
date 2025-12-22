@@ -8,7 +8,6 @@ import java.util.*;
 
 public class QueryParser {
 
-    // main entry: returns engine.executeCommand(...) result
     public static String parseAndExecute(String input, ExecutionEngine engine) {
         if (input == null || engine == null) return null;
         input = input.trim();
@@ -90,7 +89,6 @@ public class QueryParser {
                 }
 
                 default:
-                    // generic: keep raw args as single cleaned entry
                     command.setArgs(new String[]{db, collection, method + "(" + argsInside + ")", argsInside});
                     break;
             }
@@ -101,7 +99,6 @@ public class QueryParser {
         }
     }
 
-    // helper to create an error Command with a message prefix the engine can detect
     private static Command makeErrorCommand(String msg) {
         return makeErrorCommand(new Command("", "", CommandType.UNKNOWN, new String[]{"", "", ""}), msg);
     }
@@ -114,7 +111,6 @@ public class QueryParser {
         return base;
     }
 
-    // parse a simple JSON-like top-level object into map (handles quoted strings and nested braces/brackets)
     private static Map<String, String> parseObject(String s) {
         if (s == null) return null;
         s = s.trim();
