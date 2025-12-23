@@ -15,7 +15,8 @@ public class Benchmark {
     );
     List<Student> studentsCache = null;
     public Student generateStudent(long id) {
-        String name = names.get((int) (id % names.size()));
+        Random random = new Random();
+        String name = names.get(random.nextInt(0, 20));
         double gpa = ThreadLocalRandom.current().nextDouble(5.0, 20.0);
         return new Student(id, name, gpa);
     }
