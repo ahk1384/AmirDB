@@ -68,9 +68,9 @@ public class Benchmark {
 
     public static void main(String[] args){
         Benchmark benchmark = new Benchmark();
-        System.out.println("Inserted " + 50000 + " records in " + benchmark.insertBenchmark(50000) / 1_000_000 + " ms");
-        System.out.println("Deleted " + 500 + " records from the first in " + benchmark.deleteFirstBenchmark(500) / 1_000_000 + " ms");
-        System.out.println("Deleted " + 500 + " records from the last in " + benchmark.deleteLastBenchmark(500) / 1_000_000 + " ms");
-        System.out.println("Filtered " + 500 + " records in " + benchmark.filterBenchmark(500) / 1_000_000 + " ms");
+        System.out.println("Inserted " + 50000 + " records in " + benchmark.insertBenchmark(50000) / 1_000 + " µs");
+        System.out.println("Deleted " + 500 + " records from the first in " + benchmark.deleteFirstBenchmark(500) / 1_000 + " µs");
+        System.out.println("Deleted " + 500 + " records from the last in " + benchmark.deleteLastBenchmark(500) / 1_000 + " µs");
+        System.out.println("Filtered " + 500 + " records in " + benchmark.filterBenchmark(500) / 1_000 + " µs");
     }
 }
