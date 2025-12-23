@@ -8,9 +8,8 @@ import java.util.*;
 
 public class QueryParser {
 
-    // main entry: returns engine.executeCommand(...) result
-    public static boolean parseAndExecute(String input, ExecutionEngine engine) {
-        if (input == null || engine == null) return false;
+    public static String parseAndExecute(String input, ExecutionEngine engine) {
+        if (input == null || engine == null) return null;
         input = input.trim();
         if (input.isEmpty()) return engine.executeCommand(makeErrorCommand("empty input"));
 
@@ -53,7 +52,19 @@ public class QueryParser {
                     command.setArgs(new String[]{db, collection, method + "(" + argsInside + ")", String.valueOf(id), name, String.valueOf(gpa)});
                     break;
                 }
-
+                case "update" :{
+                    Map<String, String> obj = parseObject(argsInside);
+                    if (obj == null) return engine.executeCommand(makeErrorCommand(command, "invalid object for update"));
+                    Integer id = parseIntFromMap(obj, "id");
+                    if (id == null) id = parseIntFromMap(obj, "_id");
+                    String name = getStringFromMap(obj, "name");
+                    Double gpa = parseDoubleFromMap(obj, "gpa");
+                    if (id == null || name == null || gpa == null) {
+                        return engine.executeCommand(makeErrorCommand(command, "update requires id, name, gpa"));
+                    }
+                    command.setArgs(new String[]{db, collection, method + "(" + argsInside + ")", String.valueOf(id), name, String.valueOf(gpa)});
+                    break;
+                }
                 case "deleteOne": {
                     if (argsInside.startsWith("{") && argsInside.endsWith("}")) {
                         Map<String, String> obj = parseObject(argsInside);
@@ -78,7 +89,6 @@ public class QueryParser {
                 }
 
                 default:
-                    // generic: keep raw args as single cleaned entry
                     command.setArgs(new String[]{db, collection, method + "(" + argsInside + ")", argsInside});
                     break;
             }
@@ -89,7 +99,6 @@ public class QueryParser {
         }
     }
 
-    // helper to create an error Command with a message prefix the engine can detect
     private static Command makeErrorCommand(String msg) {
         return makeErrorCommand(new Command("", "", CommandType.UNKNOWN, new String[]{"", "", ""}), msg);
     }
@@ -102,7 +111,6 @@ public class QueryParser {
         return base;
     }
 
-    // parse a simple JSON-like top-level object into map (handles quoted strings and nested braces/brackets)
     private static Map<String, String> parseObject(String s) {
         if (s == null) return null;
         s = s.trim();
@@ -221,6 +229,8 @@ public class QueryParser {
             case "commit": return CommandType.COMMIT;
             case "rollback": return CommandType.ROLLBACK;
             case "exit": return CommandType.EXIT;
+            case "update" : return CommandType.UPDATE;
+            case "deleteAll": return CommandType.DELETE_ALL;
             default: return CommandType.UNKNOWN;
         }
     }
