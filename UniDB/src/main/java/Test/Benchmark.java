@@ -4,7 +4,6 @@ import Models.Student;
 
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class Benchmark {
     List<String> names = List.of(
@@ -17,7 +16,7 @@ public class Benchmark {
     public Student generateStudent(long id) {
         Random random = new Random();
         String name = names.get(random.nextInt(0, 20));
-        double gpa = ThreadLocalRandom.current().nextDouble(5.0, 20.0);
+        double gpa = Math.round((random.nextDouble(5.0,20.0)) * 100.0) / 100.0;
         return new Student(id, name, gpa);
     }
 
