@@ -42,6 +42,7 @@ public class UniDBServer {
             Socket client = serverSocket.accept();
             ui.printlnSuccess("Client connected: " + client.getInetAddress());
             new Thread(new ClientHandler(client, engine)).start();
+
         }
     }
 
