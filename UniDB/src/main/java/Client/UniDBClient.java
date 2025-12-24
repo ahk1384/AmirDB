@@ -27,8 +27,8 @@ public class UniDBClient {
     public void start() throws Exception {
         ConsoleUI ui = new ConsoleUI();
         ConsoleUI.init();
-        ui.printBanner("UniDB Client (Network Mode)");
-        ui.printlnInfo("Type 'exit' to quit.");
+        System.out.print(ui.printBanner("UniDB Client (Network Mode)"));
+        System.out.println(ui.printlnInfo("Type 'exit' to quit."));
         Scanner scanner = new Scanner(System.in);
         Response response2 = (Response) in.readObject();
         if (response2.isSuccess() && Objects.equals(response2.getMessage(), "Accepted")) {
@@ -36,37 +36,35 @@ public class UniDBClient {
         }
         while (true) {
             while (!Authorize) {
-                ui.prompt("Enter the Password : ");
+                System.out.println(ui.prompt("Enter the Password : "));
                 String input = scanner.nextLine().trim();
                 if (input.equalsIgnoreCase("exit")) {
                     out.writeObject(new Request(MessageType.EXIT, input));
                     Response response = (Response) in.readObject();
-                    ui.printBanner(response.getMessage());
+                    System.out.println(ui.printBanner(response.getMessage()));
                     break;
                 }
                 out.writeObject(new Request(MessageType.AUTH, input));
                 Response response = (Response) in.readObject();
                 if (response.isSuccess() && Objects.equals(response.getMessage(), "Accepted")) {
-                    ui.printlnSuccess("Correct Password you now logged in !");
+                    System.out.println(ui.printlnSuccess("Correct Password you now logged in !"));
                     Authorize = true;
                     break;
                 } else {
-                    ui.printlnError("Wrong Passwrod");
+                    System.out.println(ui.printlnError("Wrong Passwrod"));
                 }
             }
             if (Authorize) {
-                ui.prompt("UniDB>");
+                System.out.print(ui.prompt("UniDB>"));
                 String input = scanner.nextLine().trim();
                 if (input.equalsIgnoreCase("exit")) {
                     out.writeObject(new Request(MessageType.EXIT, input));
                     Response response = (Response) in.readObject();
-                    ui.printBanner(response.getMessage());
+                    System.out.println(ui.printBanner(response.getMessage()));
                     break;
                 }
-
                 out.writeObject(new Request(MessageType.QUERY, input));
                 Response response = (Response) in.readObject();
-
                 System.out.println(response.getMessage());
             } else {
                 break;
