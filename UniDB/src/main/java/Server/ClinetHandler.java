@@ -55,7 +55,7 @@ class ClientHandler implements Runnable {
 
             socket.close();
         } catch (Exception e) {
-            System.err.println("❌ Client disconnected");
+            ui.printlnError("Client disconnected");
         }
     }
 }
