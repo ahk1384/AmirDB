@@ -86,11 +86,11 @@ public class ExecutionEngine {
                 }
                 return handler.handle(command);
             } catch (Exception e) {
-                ui.printlnError("Command execution failed: " + e.getMessage());
+                System.out.println(ui.printlnError("Command execution failed: " + e.getMessage()));
                 return null;
             }
         } else {
-            ui.printlnError("Unknown command.");
+            System.out.println(ui.printlnError("Unknown command."));
             return null;
         }
     }

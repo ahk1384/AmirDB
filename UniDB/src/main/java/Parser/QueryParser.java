@@ -12,19 +12,21 @@ public class QueryParser {
         ConsoleUI ui = new ConsoleUI();
         if (input == null || engine == null) return null;
         input = input.trim();
-        if (input.isEmpty()) return "empty query";
+        if (input.isEmpty()) return ui.printlnError("empty query");
 
         try {
             ParsedQuery pq = parseInput(input);
-            if (pq == null) return "invalid query format";
+            if (pq == null) return ui.printlnError("invalid query format");
             CommandType commandType = stringToCommandType(pq.method);
             Command command = new Command(pq.db, pq.collection, commandType, new String[]{pq.db, pq.collection, pq.method + "(" + pq.argsInside + ")"});
-
+            if (commandType == CommandType.UNKNOWN) {
+                return ui.printlnError("unknown command: " + pq.method);
+            }
             switch (commandType) {
                 case INSERT_ONE:
                 case UPDATE: {
                     Map<String, String> obj = parseObject(pq.argsInside);
-                    if (obj == null) return "invalid object format";
+                    if (obj == null) return ui.printlnError("invalid object format");
                     Integer id = parseIntFromMap(obj, "id");
                     if (id == null) id = parseIntFromMap(obj, "_id");
                     String name = getStringFromMap(obj, "name");
@@ -53,7 +55,7 @@ public class QueryParser {
             }
             return engine.executeCommand(command);
         } catch (Exception ex) {
-            return "error executing query: " + ex.getMessage();
+            return ui.printlnError("error executing command: " + ex.getMessage());
         }
     }
 
@@ -173,5 +175,8 @@ public class QueryParser {
             case "deleteAll": return CommandType.DELETE_ALL;
             default: return CommandType.UNKNOWN;
         }
+    }
+    public static boolean isValidQuery(String input) {
+        return parseInput(input) != null;
     }
 }

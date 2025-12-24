@@ -23,24 +23,24 @@ public class UniDBServer {
         ServerSocket serverSocket;
         String pass;
         while (true){
-            ui.printInfo("do you want to enabel the login with password [Y/N]:");
+            System.out.print(ui.printInfo("do you want to enabel the login with password [Y/N]:"));
             String status = sc.nextLine();
             if (status.toLowerCase().equals("y")){
-                ui.prompt("Enter Your Password : ");
+                System.out.print(ui.prompt("Enter Your Password : "));
                 pass = sc.nextLine();
-                ui.printlnSuccess("Your Password is set !");
+                System.out.println(ui.printlnSuccess("Your Password is set !"));
                 serverSocket = new ServerConfig().createServerSocket(PORT,pass);
                 break;
             }
             else{
-                ui.printlnSuccess("Without Password Set !");
+                System.out.println(ui.printlnSuccess("Without Password Set !"));
                 serverSocket = new ServerConfig().createServerSocket(PORT);
                 break;
             }
         }
         while (true) {
             Socket client = serverSocket.accept();
-            ui.printlnSuccess("Client connected: " + client.getInetAddress());
+            System.out.println(ui.printlnSuccess("Client connected: " + client.getInetAddress() + ":" + client.getPort()));
             new Thread(new ClientHandler(client, engine)).start();
 
         }
