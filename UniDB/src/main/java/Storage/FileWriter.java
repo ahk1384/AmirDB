@@ -1,18 +1,14 @@
 package Storage;
 
 import Models.Student;
-
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
-import java.util.Objects;
 
 public class FileWriter {
     private static String writeFile(String filePath,String content) {
@@ -25,7 +21,6 @@ public class FileWriter {
         return content;
     }
     public static boolean saveFile(List<Student> students) {
-        Path path = Paths.get("src/main/java/Storage/data.csv");
         StringBuilder content = new StringBuilder();
 
         for(Student st : students){

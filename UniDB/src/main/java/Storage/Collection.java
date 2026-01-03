@@ -9,6 +9,5 @@ public interface Collection {
     boolean deleteOne(Long id);
     Student findByID(Long id);
     boolean update(Student student);
-
     List<Student> findAll();
 }

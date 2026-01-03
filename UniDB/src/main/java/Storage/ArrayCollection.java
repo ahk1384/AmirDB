@@ -28,15 +28,6 @@ public class ArrayCollection implements Collection {
         return null;
     }
 
-    public Student findByID(int id) {
-        for (Student student : students) {
-            if (student.getId() == id) {
-                return student;
-            }
-        }
-        return null;
-    }
-
     public boolean update(Student student) {
         for (int i = 0; i < students.size(); i++) {
             if (students.get(i).getId() == student.getId()) {
