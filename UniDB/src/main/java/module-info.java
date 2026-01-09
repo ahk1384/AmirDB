@@ -4,6 +4,7 @@ module com.example.unidb {
 
     requires org.controlsfx.controls;
     requires java.desktop;
+    requires java.sql;
 
     opens com.example.unidb to javafx.fxml;
     exports com.example.unidb;
