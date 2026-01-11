@@ -1,5 +1,7 @@
 package DataStructeure;
 
+import java.util.ArrayList;
+
 class Node<T> {
     public T value;
     public int height;
@@ -11,11 +13,13 @@ class Node<T> {
         value = d;
         height = 1;
     }
+    public T getDate(){
+        return value;
+    }
 
 }
-class AVLTree<T>
+class AVLTree<T extends Comparable<T>>
 {
-
 
 
     private Node<T> root;
@@ -65,9 +69,9 @@ class AVLTree<T>
             return new Node<T>(value);
         }
 
-        if (Comparer<T>.Default.Compare(value, node.value) < 0) {
+        if (value.compareTo(node.value)< 0) {
             node.left = insert(node.left, value);
-        } else if (Comparer<T>.Default.Compare(value, node.value) > 0) {
+        } else if (value.compareTo(node.value) > 0) {
             node.right = insert(node.right, value);
         } else {
             return node;
@@ -77,33 +81,37 @@ class AVLTree<T>
 
         int balance = getBalance(node);
 
-        if (balance > 1 && Comparer<T>.Default.Compare(value, node.left.value) < 0) {
+        if (balance > 1 && value.compareTo(node.value) < 0) {
             return rightRotate(node);
         }
 
-        if (balance < -1 && Comparer<T>.Default.Compare(value, node.right.value) > 0) {
+        if (balance < -1 && value.compareTo(node.value) > 0) {
             return leftRotate(node);
         }
 
-        if (balance > 1 && Comparer<T>.Default.Compare(value, node.left.value) > 0) {
+        if (balance > 1 && value.compareTo(node.value) > 0) {
             node.left = leftRotate(node.left);
             return rightRotate(node);
         }
 
-        if (balance < -1 && Comparer<T>.Default.Compare(value, node.right.value) < 0) {
+        if (balance < -1 && value.compareTo(node.value) < 0) {
             node.right = rightRotate(node.right);
             return leftRotate(node);
         }
 
         return node;
     }
+
+
+
+
     public int depth(T value) {
         Node<T> node = root;
         int depth = 0;
         while (node != null) {
-            if (Comparer<T>.Default.Compare(value, node.value) == 0) {
+            if (value.compareTo(node.value) == 0) {
                 return depth;
-            } else if (Comparer<T>.Default.Compare(value, node.value) < 0) {
+            } else if (value.compareTo(node.value) < 0) {
                 node = node.left;
             } else {
                 node = node.right;
@@ -117,9 +125,9 @@ class AVLTree<T>
         Node<T> ceilNode = null;
 
         while (node != null) {
-            if (Comparer<T>.Default.Compare(value, node.value) == 0) {
+            if (value.compareTo(node.value) == 0) {
                 return node;
-            } else if (Comparer<T>.Default.Compare(value, node.value) < 0) {
+            } else if (value.compareTo(node.value) < 0) {
                 ceilNode = node;
                 node = node.left;
             } else {
@@ -132,59 +140,59 @@ class AVLTree<T>
     public T find(T value) {
         Node<T> node = root;
         while (node != null) {
-            if (Comparer<T>.Default.Compare(value, node.value) == 0) {
+            if (value.compareTo(node.value)== 0) {
                 return node.value;
-            } else if (Comparer<T>.Default.Compare(value, node.value) < 0) {
+            } else if (value.compareTo(node.value)< 0) {
                 node = node.left;
             } else {
                 node = node.right;
             }
         }
-        return default(T);
+        return null;
     }
-    private List<T> preOrder(Node<T> node) {
-        List<T> result = new List<T>();
+    private ArrayList<T> preOrder(Node<T> node) {
+        ArrayList<T> result = new ArrayList<T>();
         if (node != null) {
-            result.Add(node.value);
-            result.AddRange(preOrder(node.left));
-            result.AddRange(preOrder(node.right));
+            result.add(node.value);
+            result.addAll(preOrder(node.left));
+            result.addAll(preOrder(node.right));
         }
         return result;
     }
-    public List<T> PreOrder() {
+    public ArrayList<T> PreOrder() {
         return preOrder(root);
     }
-    public List<T> InOrder() {
+    public ArrayList<T> InOrder() {
         return inOrder(root);
     }
-    private List<T> inOrder(Node<T> node) {
-        List<T> result = new List<T>();
+    private ArrayList<T> inOrder(Node<T> node) {
+        ArrayList<T> result = new ArrayList<T>();
         if (node != null) {
-            result.AddRange(inOrder(node.left));
-            result.Add(node.value);
-            result.AddRange(inOrder(node.right));
+            result.addAll(inOrder(node.left));
+            result.add(node.value);
+            result.addAll(inOrder(node.right));
         }
         return result;
     }
-    public List<T> PostOrder() {
+    public ArrayList<T> PostOrder() {
         return postOrder(root);
     }
-    private List<T> postOrder(Node<T> node) {
-        List<T> result = new List<T>();
+    private ArrayList<T> postOrder(Node<T> node) {
+        ArrayList<T> result = new ArrayList<T>();
         if (node != null) {
-            result.AddRange(postOrder(node.left));
-            result.AddRange(postOrder(node.right));
-            result.Add(node.value);
+            result.addAll(postOrder(node.left));
+            result.addAll(postOrder(node.right));
+            result.add(node.value);
         }
         return result;
     }
-    public String traverse(string type) {
+    public String traverse(String type) {
         if (type == "postorder") {
-            return String.Join(" ", PostOrder());
+            return PostOrder().toString();
         } else if (type == "inorder") {
-            return String.Join(" ", InOrder());
+            return InOrder().toString();
         } else if (type == "preorder") {
-            return String.Join(" ", PreOrder());
+            return PreOrder().toString();
         }
         return "";
     }
@@ -197,13 +205,19 @@ class AVLTree<T>
             return node;
         }
 
-        if (Comparer<T>.Default.Compare(value, node.value) < 0) {
+        if (value.compareTo(node.value) < 0) {
             node.left = RemoveNode(node.left, value);
-        } else if (Comparer<T>.Default.Compare(value, node.value) > 0) {
+        } else if (value.compareTo(node.value) > 0) {
             node.right = RemoveNode(node.right, value);
         } else {
             if (node.left == null || node.right == null) {
-                Node<T> temp = node.left ?? node.right;
+                Node<T> temp ;
+                if (node.left != null){
+                    temp = node.left;
+                }
+                else{
+                    temp = node.right;
+                }
 
                 if (temp == null) {
                     node = null;
