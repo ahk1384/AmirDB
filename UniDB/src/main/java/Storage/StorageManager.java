@@ -122,7 +122,43 @@ public class StorageManager {
         }
         return commands;
     }
-
+    public List<Command> importDataTransaction() {
+        List<Command> commands = new java.util.ArrayList<>();
+        List<Student> students = FileReader.loadFile();
+        if (students.isEmpty()) {
+            return null;
+        }
+        for (Models.Student student : students) {
+            if (findByID(student.id) != null){
+                Models.Student st = findByID(student.getId());
+                if (!update(student)){
+                    return null;
+                }
+                else{
+                    commands.add(new Command("db", "s", CommandType.UPDATE, new String[]{
+                            "db",
+                            "s",
+                            "update",
+                            String.valueOf(st.getId()),
+                            student.getName(),
+                            String.valueOf(st.getGpa())
+                    }));
+                }
+            }else{
+                if (!insertOne(student)){
+                    return null;
+                }else{
+                    commands.add(new Command("db", "s", CommandType.DELETE_ONE, new String[]{
+                            "db",
+                            "s",
+                            "deleteOne",
+                            String.valueOf(student.getId())
+                    }));
+                }
+            }
+        }
+        return commands;
+    }
     public boolean importData() {
         List<Student> students = FileReader.loadFile();
         if (students.isEmpty()) {

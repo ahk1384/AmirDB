@@ -8,7 +8,7 @@ import java.net.Socket;
 import java.io.*;
 
 public class ServerConfig {
-    public static final int SOCKET_TIMEOUT_MS = 300000;
+    public static final int SOCKET_TIMEOUT_MS = Integer.MAX_VALUE;
     static String Pass = null;
     public static ServerSocket createServerSocket(int port, String pass) throws Exception {
         Pass = pass;

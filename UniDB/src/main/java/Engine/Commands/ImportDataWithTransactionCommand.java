@@ -20,5 +20,8 @@ public class ImportDataWithTransactionCommand {
     public static List<Command> execute(String filePath) {
         return sm.importDataTransaction(filePath);
     }
+    public static List<Command> execute() {
+        return sm.importDataTransaction();
+    }
 }
 

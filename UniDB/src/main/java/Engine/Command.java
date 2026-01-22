@@ -40,6 +40,7 @@ public class Command {
         return commandType;
     }
 
+
     public String[] getArgs() {
         return args;
     }
