@@ -25,5 +25,7 @@ public enum CommandType {
     EXECUTE_BATCH,
     DELETE_ALL,
     BEGIN_TRANSACTION,
+    CREATE_INDEX,
+    SEARCH,
     UNKNOWN
 }

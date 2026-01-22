@@ -1,5 +1,7 @@
 package DataStructeure;
 
+import Shared.SearchResult;
+
 import java.util.ArrayList;
 
 class Node<T> {
@@ -18,7 +20,7 @@ class Node<T> {
     }
 
 }
-class AVLTree<T extends Comparable<T>>
+public class AVLTree<T extends Comparable<T>>
 {
 
 
@@ -69,7 +71,7 @@ class AVLTree<T extends Comparable<T>>
             return new Node<T>(value);
         }
 
-        if (value.compareTo(node.value)< 0) {
+        if (value.compareTo(node.value)<= 0) {
             node.left = insert(node.left, value);
         } else if (value.compareTo(node.value) > 0) {
             node.right = insert(node.right, value);
@@ -137,18 +139,23 @@ class AVLTree<T extends Comparable<T>>
 
         return ceilNode;
     }
-    public T find(T value) {
+    public SearchResult find(T value) {
+        int count = 0;
+        int scanned = 0;
+
         Node<T> node = root;
         while (node != null) {
+            scanned ++;
             if (value.compareTo(node.value)== 0) {
-                return node.value;
+                count++ ;
+                node = node.left;
             } else if (value.compareTo(node.value)< 0) {
                 node = node.left;
             } else {
                 node = node.right;
             }
         }
-        return null;
+        return new SearchResult(count,0.0,scanned);
     }
     private ArrayList<T> preOrder(Node<T> node) {
         ArrayList<T> result = new ArrayList<T>();

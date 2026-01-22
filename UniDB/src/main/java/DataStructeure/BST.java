@@ -1,5 +1,7 @@
 package DataStructeure;
 
+import Shared.SearchResult;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,27 +39,41 @@ public class BST<T extends Comparable<T>> {
         if (node == null) {
             return new BSTNode<T>(top, value);
         }
-
-        if (value.compareTo(node.Value) < 0) {
+        if (value.compareTo(node.Value) <= 0) {
             node.Left = InsertRec(node.Left, node, value);
         } else if (value.compareTo(node.Value) > 0) {
             node.Right = InsertRec(node.Right, node, value);
-        } else {
-            // Value already exists, don't insert duplicates
-            return node;
         }
         return node;
     }
 
-    public boolean Search(T value) {
-        return SearchRec(Root, value);
+    public SearchResult Search(T value) {
+        int scanned = 0;
+        int count = 0;
+        SearchResult res = new SearchResult(count, 0.0, scanned);
+        res = SearchRec(Root, value, scanned, count);
+        return res;
     }
 
+    private SearchResult SearchRec(BSTNode<T> node, T value, int scanned, int count) {
+        if (node == null) {
+            return new SearchResult(count, 0.0, scanned);
+        }
+        scanned++;
+        if (value.compareTo(node.Value) == 0) {
+            count++;
+        }
+        if (value.compareTo(node.Value) < 0) {
+            return SearchRec(node.Left, value, scanned, count);
+        } else {
+            return SearchRec(node.Right, value, scanned, count);
+        }
+    }
     private boolean SearchRec(BSTNode<T> node, T value) {
+        int count = 0;
         if (node == null) {
             return false;
         }
-
         if (value.compareTo(node.Value) == 0) {
             return true;
         } else if (value.compareTo(node.Value) < 0) {

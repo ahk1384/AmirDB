@@ -173,6 +173,8 @@ public class QueryParser {
             case "exit": return CommandType.EXIT;
             case "update" : return CommandType.UPDATE;
             case "deleteAll": return CommandType.DELETE_ALL;
+            case "createIndex" : return CommandType.CREATE_INDEX;
+            case "search" : return CommandType.SEARCH;
             default: return CommandType.UNKNOWN;
         }
     }

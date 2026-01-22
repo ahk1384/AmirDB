@@ -1,5 +1,7 @@
 package DataStructeure;
 
+import Shared.SearchResult;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,9 +50,26 @@ public class HashMap<K, V> {
         }
     }
 
-    public V get(K key) {
+    public SearchResult get(K key) {
         int index = hash(key);
+        int count = 0 ;
+        int scanned = 0;
+        int i = index;
+        while (table[i] != null) {
+            scanned ++;
+            if (table[i].key.equals(key)) {
+                count++;
+            }
+            i = (i + 1) % capacity;
+            if (i == index) {
+                return new SearchResult(count,0.0,scanned);
+            }
+        }
 
+        return new SearchResult(count, 0.0,scanned);
+    }
+    public V getValue(K key) {
+        int index = hash(key);
         int i = index;
         while (table[i] != null) {
             if (table[i].key.equals(key)) {
@@ -58,7 +77,6 @@ public class HashMap<K, V> {
             }
             i = (i + 1) % capacity;
             if (i == index) {
-
                 return null;
             }
         }

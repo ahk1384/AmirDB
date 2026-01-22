@@ -1,14 +1,18 @@
 package Engine;
 
+import Index.FiledsType;
+import Index.IndexType;
 import Models.Student;
+import Optimizer.IIndexOptimizer;
+import Optimizer.IndexOptimizer;
+import Shared.SearchResult;
 import Storage.StorageManager;
 import Engine.Commands.*;
 
-import java.io.Console;
 import java.io.IOException;
 import java.util.*;
+
 import Main.ConsoleUI;
-import org.controlsfx.dialog.CommandLinksDialog;
 
 public class ExecutionEngine {
 
@@ -43,17 +47,18 @@ public class ExecutionEngine {
         commandHandlers.put(CommandType.COMMIT, this::handleCommit);
         commandHandlers.put(CommandType.START_BATCH, this::handleStartBatch);
         commandHandlers.put(CommandType.EXECUTE_BATCH, this::handleExecuteBatch);
-        commandHandlers.put(CommandType.UPDATE , this :: handleUpdate);
-        commandHandlers.put(CommandType.UPDATE_DIRECT,this:: handleUpdateDirect);
-        commandHandlers.put(CommandType.DELETE_ALL,this:: handleDeleteAll);
+        commandHandlers.put(CommandType.UPDATE, this::handleUpdate);
+        commandHandlers.put(CommandType.UPDATE_DIRECT, this::handleUpdateDirect);
+        commandHandlers.put(CommandType.DELETE_ALL, this::handleDeleteAll);
+        commandHandlers.put(CommandType.CREATE_INDEX, this::handleCreateIndex);
+        commandHandlers.put(CommandType.SEARCH,this :: handleSearch);
     }
 
     public String executeCommand(Command command) {
         CommandHandler handler = commandHandlers.get(command.getCommandType());
         if (handler != null) {
             return handler.handle(command);
-        }
-        else    {
+        } else {
             System.out.println("Unknown command.");
             return null;
         }
@@ -71,7 +76,7 @@ public class ExecutionEngine {
                                 command.getArgs());
                         handler = commandHandlers.get(CommandType.INSERT_ONE_DIRECT);
                         return handler.handle(directCommand);
-                    }else if (command.getCommandType() == CommandType.DELETE_ONE) {
+                    } else if (command.getCommandType() == CommandType.DELETE_ONE) {
                         Command directCommand = new Command(command.getRoot(), command.getCollection(),
                                 CommandType.DELETE_ONE_DIRECT,
                                 command.getArgs());
@@ -96,7 +101,9 @@ public class ExecutionEngine {
     }
 
     public String handleInsertOneDirect(Command command) {
-        if (InsertOneCommand.execute(new Student(Long.parseLong(command.getArgs()[3]), command.getArgs()[4], Double.parseDouble(command.getArgs()[5])))) {
+        Long id = Long.parseLong(command.getArgs()[3]);
+        if (InsertOneCommand.execute(new Student(id, command.getArgs()[4], Double.parseDouble(command.getArgs()[5])))) {
+            IndexOptimizer.getInstance().UpdateInsertIndex(FindByIdCommand.execute(id));
             return ui.printlnSuccess("Insert successful.");
         } else {
             return ui.printlnError("Insert failed.");
@@ -128,12 +135,35 @@ public class ExecutionEngine {
     }
 
     public String handleDeleteOneDirect(Command command) {
-        if (DeleteOneCommand.execute(Long.parseLong(command.getArgs()[3]))) {
+        Long id = Long.parseLong(command.getArgs()[3]);
+        Student st = FindByIdCommand.execute(id);
+        if (DeleteOneCommand.execute(id)) {
+            IndexOptimizer.getInstance().UpdateDeleteIndex(st);
             return ui.printlnSuccess("Delete successful.");
 
         } else {
             return ui.printlnError("Delete failed.");
         }
+    }
+
+    public String handleSearch(Command command){
+        String[] str = command.getArgs()[3].split(",");
+        FiledsType filedsType = FiledsType.valueOf(str[0]);
+        String value = str[1];
+        if(IndexOptimizer.getInstance().isIndexed(filedsType)){
+            SearchCommand st = new SearchCommand(IndexOptimizer.getInstance());
+            SearchResult result = st.execute(filedsType,value);
+            if(result != null){
+                return ui.printlnSuccess("Result: Found " + result.getCount() + " records , Time: "+result.getTime()+"ms .");
+            }
+            else{
+                return ui.printlnError("Use Inverted Index Optimization.");
+            }
+        }
+        else {
+            return ui.printlnError("Index does not exist,First use createIndex Command");
+        }
+
     }
 
     public String handleDeleteOne(Command command) {
@@ -164,11 +194,12 @@ public class ExecutionEngine {
             return executeCommandDirectly(command);
         }
     }
+
     public String handleDeleteAll(Command command) {
         if (currentMode == ProgramMode.TRANSACTION) {
             List<Student> allStudents = sm.findAll();
-            String result ;
-            if (DeleteAllCommand.execute()){
+            String result;
+            if (DeleteAllCommand.execute()) {
                 result = ui.printlnSuccess("All records deleted successfully.");
             } else {
                 return ui.printlnError("Delete all failed.");
@@ -192,13 +223,14 @@ public class ExecutionEngine {
             batchQueue.add(command);
             return ui.printlnSuccess("Command added to batch queue.");
         } else {
-            if(DeleteAllCommand.execute()){
+            if (DeleteAllCommand.execute()) {
                 return ui.printlnSuccess("All records deleted successfully.");
             } else {
                 return ui.printlnError("Delete all failed.");
             }
         }
     }
+
     public String handleSave(Command command) {
         ui.printlnInfo("Saving data ...");
         if (SaveDataCommand.execute()) {
@@ -274,14 +306,19 @@ public class ExecutionEngine {
     }
 
     public String handleUpdateDirect(Command command) {
-        if (UpdateCommand.execute(new Student(Long.parseLong(command.getArgs()[3]), command.getArgs()[4], Double.parseDouble(command.getArgs()[5])))) {
+        Long id = Long.parseLong(command.getArgs()[3]);
+        Student st = FindByIdCommand.execute(id);
+        Student n = new Student(Long.parseLong(command.getArgs()[3]), command.getArgs()[4], Double.parseDouble(command.getArgs()[5]));
+        if (UpdateCommand.execute(n)) {
+            IndexOptimizer.getInstance().UpdateDeleteIndex(st);
+            IndexOptimizer.getInstance().UpdateInsertIndex(n);
             return ui.printlnSuccess("Update successful.");
         } else {
             return ui.printlnError("Update failed.");
         }
     }
 
-    public String handleUpdate(Command command){
+    public String handleUpdate(Command command) {
         if (currentMode == ProgramMode.TRANSACTION) {
             Student s = sm.findByID(Long.parseLong(command.getArgs()[3]));
             if (s != null) {
@@ -324,15 +361,13 @@ public class ExecutionEngine {
                 return ui.printlnError("Import failed.");
 
             }
-        }
-        else if (currentMode == ProgramMode.BATCH) {
+        } else if (currentMode == ProgramMode.BATCH) {
             batchQueue.add(command);
             return ui.printlnSuccess("Command added to batch queue.");
 
-        }
-        else {
+        } else {
             if (command.getArgs()[2].equals("import()")) {
-                if (ImportDataCommand.execute()){
+                if (ImportDataCommand.execute()) {
                     return ui.printlnSuccess("Import successful.");
 
                 } else {
@@ -351,20 +386,24 @@ public class ExecutionEngine {
     }
 
     public String handleFilter(Command command) {
+        IIndexOptimizer indexOptimizer = IndexOptimizer.getInstance();
         List<Student> results;
-        if (command.getArgs()[3] != ""){
-            String[] conditions = command.getArgs()[2].split(",");
-            String field = conditions[0].substring(conditions[0].indexOf('(') + 2, conditions[0].lastIndexOf('"')).trim();
+        String[] conditions = command.getArgs()[3].split(",");
+        String field = conditions[0];
+        if (conditions.length > 2) {
             String start = conditions[1];
-            String end = conditions[2].substring(0, conditions[2].lastIndexOf(')')).trim();
+            String end = conditions[2];
             ui.printlnInfo("Filtered Students:");
-            results = FilterByFieldCommand.execute(field, start,end);
-        }else{
-            String[] conditions = command.getArgs()[2].split(",");
-            String field = conditions[0].substring(conditions[0].indexOf('(') + 2, conditions[0].lastIndexOf('"')).trim();
-            String value = conditions[1].substring(1, conditions[1].lastIndexOf(')') - 1).trim();
+            results = FilterByFieldCommand.execute(field, start, end);
+        } else {
+            String value = conditions[1];
             ui.printlnInfo("Filtered Students:");
-            results = FilterByFieldCommand.execute(field, value);
+            if (indexOptimizer.isIndexed(FiledsType.valueOf(field))) {
+                SearchResult res = new FilterByFiledIndexedCommad(indexOptimizer).execute(FiledsType.valueOf(field),value);
+                return ui.printlnSuccess("Result : Found " + res.getCount() + " record (Time : " + res.getTime() + "ms, Scanned: " + res.getScaned() + ")");
+            } else {
+                results = FilterByFieldCommand.execute(field, value);
+            }
         }
 
         List<String[]> rows = new ArrayList<>();
@@ -394,16 +433,15 @@ public class ExecutionEngine {
             return ui.printlnError("Not in transaction mode.");
         } else {
             StringBuilder result = new StringBuilder();
-            long count ;
-            if (command.getArgs()[3] != ""){
+            long count;
+            if (command.getArgs()[3] != "") {
                 count = Long.parseLong(command.getArgs()[3]);
-            }
-            else{
+            } else {
                 count = transactionStack.count();
             }
             while (!transactionStack.isEmpty() && (count != 0)) {
                 Command cmd = transactionStack.pop();
-                result.append(executeCommandDirectly(cmd)+"\n");
+                result.append(executeCommandDirectly(cmd) + "\n");
                 if (count > 0) {
                     count--;
                 }
@@ -434,7 +472,7 @@ public class ExecutionEngine {
             StringBuilder result = new StringBuilder();
             while (!batchQueue.isEmpty()) {
                 Command cmd = batchQueue.poll();
-                result.append(executeCommandDirectly(cmd)+"\n");
+                result.append(executeCommandDirectly(cmd) + "\n");
             }
             batchQueue = null;
 
@@ -442,6 +480,21 @@ public class ExecutionEngine {
             return result.toString();
         }
 
+    }
+
+    public String handleCreateIndex(Command command) {
+        CreateIndexCommand indexer = new CreateIndexCommand(IndexOptimizer.getInstance());
+        String[] args = command.getArgs()[3].trim().split(",");
+        IndexType indexType = IndexType.valueOf(args[0].toUpperCase());
+        FiledsType filedsType = FiledsType.valueOf(args[1].toLowerCase());
+        try {
+            if(!indexer.execute(indexType, filedsType)){
+                return ui.printlnError("Index already exist.");
+            }
+        } catch (Exception e) {
+            return ui.printlnError("Error creating index.");
+        }
+        return ui.printlnSuccess("Index created.");
     }
 
     public String handleStartBatch(Command command) {

@@ -6,6 +6,10 @@ public class SearchResult {
     private double time ;
     private int scaned;
 
+    public void setTime(double time) {
+        this.time = time;
+    }
+
     public SearchResult(int count, double time, int scaned) {
         this.count = count;
         this.time = time;
