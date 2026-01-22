@@ -38,15 +38,17 @@ public class FileReader {
         return content.toString();
     }
     public static Optional<Path> chooseCsvFile(Component parent) {
-        JFileChooser chooser = new JFileChooser();
-        chooser.setDialogTitle("Select CSV file");
-        chooser.setFileFilter(new FileNameExtensionFilter("CSV files", "csv"));
-        int res = chooser.showOpenDialog(parent);
-        if (res == JFileChooser.APPROVE_OPTION) {
-            return Optional.of(chooser.getSelectedFile().toPath());
+        FileDialog fileDialog = new FileDialog((Frame) parent, "Select CSV file", FileDialog.LOAD);
+        fileDialog.setFile("*.csv");
+        fileDialog.setVisible(true);
+        String directory = fileDialog.getDirectory();
+        String file = fileDialog.getFile();
+        if (directory != null && file != null) {
+            return Optional.of(Path.of(directory, file));
         }
         return Optional.empty();
     }
+
     public static List<Student> loadFile() {
         Optional<Path> chosen= chooseCsvFile(null);
         List<Student> students = new java.util.ArrayList<>();

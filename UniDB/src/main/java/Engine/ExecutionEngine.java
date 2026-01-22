@@ -5,7 +5,7 @@ import Index.IndexType;
 import Models.Student;
 import Optimizer.IIndexOptimizer;
 import Optimizer.IndexOptimizer;
-import Shared.SearchResult;
+import Shared.*;
 import Storage.StorageManager;
 import Engine.Commands.*;
 
@@ -349,8 +349,13 @@ public class ExecutionEngine {
 
     public String handleImportData(Command command) {
         if (currentMode == ProgramMode.TRANSACTION) {
-            List<Command> rollbackCommands = ImportDataWithTransactionCommand.execute(command.getArgs()[2].substring(command.getArgs()[2].indexOf('(') + 2,
+            List<Command> rollbackCommands ;
+            if(command.getArgs()[2].equals("import()")){
+                 rollbackCommands= ImportDataWithTransactionCommand.execute();
+            }else{
+                rollbackCommands = ImportDataWithTransactionCommand.execute(command.getArgs()[2].substring(command.getArgs()[2].indexOf('(') + 2,
                     command.getArgs()[2].lastIndexOf(')') - 1).trim());
+            }
             if (rollbackCommands != null) {
                 for (Command cmd : rollbackCommands) {
                     transactionStack.push(cmd);

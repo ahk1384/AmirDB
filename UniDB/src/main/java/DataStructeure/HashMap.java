@@ -1,6 +1,6 @@
 package DataStructeure;
 
-import Shared.SearchResult;
+import Shared.*;
 
 import java.util.ArrayList;
 import java.util.List;
