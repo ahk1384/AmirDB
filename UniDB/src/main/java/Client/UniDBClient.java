@@ -77,7 +77,7 @@ public class UniDBClient {
 
     public static void main(String[] args) throws Exception {
         UniDBClient client = new UniDBClient();
-        client.connect("192.168.1.5", 5000);
+        client.connect("localhost", 5000);
         client.start();
     }
 }
