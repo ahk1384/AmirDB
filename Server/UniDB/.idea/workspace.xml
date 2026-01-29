@@ -1,0 +1,788 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="3a6ca4f9-8ea4-4732-9b51-397f14a4a54d" name="Changes" comment="Update data import functionality and modify sample data">
+      <change beforePath="$PROJECT_DIR$/../Runable Files/Client.jar" beforeDir="false" afterPath="$PROJECT_DIR$/../Runable Files/Client.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Runable Files/Server.jar" beforeDir="false" afterPath="$PROJECT_DIR$/../Runable Files/Server.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JavaFXApplication" />
+        <option value="Interface" />
+        <option value="Enum" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$/.." value="Network" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="KubernetesApiPersistence">{}</component>
+  <component name="KubernetesApiProvider">{
+  &quot;isMigrated&quot;: true
+}</component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 8
+}</component>
+  <component name="ProjectId" id="36L3nRwzID8M4cUZ2ko23bmhCOA" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.Benchmark.executor": "Run",
+    "Application.Clinet.UniDBClient.executor": "Run",
+    "Application.HelloApplication.executor": "Debug",
+    "Application.Main.executor": "Run",
+    "Application.ServerConfig.executor": "Run",
+    "Application.UniDBClient.executor": "Run",
+    "Application.UniDBServer.executor": "Debug",
+    "Application.client1.executor": "Run",
+    "Application.client2.executor": "Run",
+    "Maven.Server [install].executor": "Run",
+    "Maven.Server [package].executor": "Run",
+    "Maven.UniDB [install].executor": "Run",
+    "Maven.UniDB [package].executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "SHELLCHECK.PATH": "I do mind",
+    "database.data.extractors.current.export.id": "CSV-Groovy.csv.groovy",
+    "database.data.extractors.current.id": "CSV-Groovy.csv.groovy",
+    "git-widget-placeholder": "Indexable",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "E:/Amir/University/Term 3/First Project/project01-unidb-ahk1384/UniDB",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "settings.editor.selected.configurable": "reference.settings.project.maven.repository.indices",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="E:\Amir\University\Term 3\First Project\project01-unidb-ahk1384\UniDB\src\main\java" />
+    </key>
+    <key name="ExtractSuperBase.RECENT_KEYS">
+      <recent name="Optimizer" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Application.UniDBServer">
+    <configuration name="Benchmark" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Test.Benchmark" />
+      <module name="UniDB" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="Test.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Main.Main" />
+      <module name="UniDB" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ServerConfig" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Server.ServerConfig" />
+      <module name="UniDB" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="Server.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="UniDBClient" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="ALTERNATIVE_JRE_PATH" value="21" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+      <option name="MAIN_CLASS_NAME" value="Client.UniDBClient" />
+      <module name="UniDB" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="Client.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="UniDBServer" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Server.UniDBServer" />
+      <module name="UniDB" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="Server.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Application.Benchmark" />
+      <item itemvalue="Application.Main" />
+      <item itemvalue="Application.ServerConfig" />
+      <item itemvalue="Application.UniDBClient" />
+      <item itemvalue="Application.UniDBServer" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.UniDBServer" />
+        <item itemvalue="Application.UniDBClient" />
+        <item itemvalue="Application.Main" />
+        <item itemvalue="Application.ServerConfig" />
+        <item itemvalue="Application.Benchmark" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9f38398b9061-39b83d9b5494-intellij.indexing.shared.core-IU-241.18034.62" />
+        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-IU-241.18034.62" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="3a6ca4f9-8ea4-4732-9b51-397f14a4a54d" name="Changes" comment="" />
+      <created>1764772191915</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1764772191915</updated>
+      <workItem from="1764772193010" duration="1873000" />
+      <workItem from="1764774098401" duration="6606000" />
+      <workItem from="1764831553555" duration="1317000" />
+      <workItem from="1764832900681" duration="539000" />
+      <workItem from="1764833475627" duration="114000" />
+      <workItem from="1764833621328" duration="2335000" />
+      <workItem from="1765032265400" duration="1547000" />
+      <workItem from="1765519985823" duration="25000" />
+      <workItem from="1765520045470" duration="2673000" />
+      <workItem from="1765522766826" duration="1546000" />
+      <workItem from="1765528108455" duration="8318000" />
+      <workItem from="1765549575617" duration="129000" />
+      <workItem from="1765549727443" duration="255000" />
+      <workItem from="1765550013380" duration="943000" />
+      <workItem from="1765551587721" duration="536000" />
+      <workItem from="1765553315596" duration="595000" />
+      <workItem from="1765642211122" duration="1212000" />
+      <workItem from="1765707936924" duration="178000" />
+      <workItem from="1765708137687" duration="1467000" />
+      <workItem from="1765714694258" duration="52000" />
+      <workItem from="1765714758431" duration="5589000" />
+      <workItem from="1765720423737" duration="2772000" />
+      <workItem from="1765724043423" duration="3877000" />
+      <workItem from="1765731574753" duration="3596000" />
+      <workItem from="1765798771632" duration="4000" />
+      <workItem from="1765798849695" duration="1516000" />
+      <workItem from="1765800408431" duration="1038000" />
+      <workItem from="1765819720812" duration="617000" />
+      <workItem from="1765881640177" duration="720000" />
+      <workItem from="1765884478511" duration="62000" />
+      <workItem from="1765885732097" duration="280000" />
+      <workItem from="1766039847249" duration="25000" />
+      <workItem from="1766039887600" duration="4132000" />
+      <workItem from="1766044078531" duration="498000" />
+      <workItem from="1766044602038" duration="675000" />
+      <workItem from="1766045762741" duration="777000" />
+      <workItem from="1766046569732" duration="4196000" />
+      <workItem from="1766050867292" duration="42000" />
+      <workItem from="1766050932927" duration="305000" />
+      <workItem from="1766051259139" duration="193000" />
+      <workItem from="1766051469604" duration="903000" />
+      <workItem from="1766052668578" duration="170000" />
+      <workItem from="1766053256909" duration="570000" />
+      <workItem from="1766054520220" duration="54000" />
+      <workItem from="1766054622335" duration="43000" />
+      <workItem from="1766054804859" duration="83000" />
+      <workItem from="1766054912570" duration="775000" />
+      <workItem from="1766055723044" duration="27000" />
+      <workItem from="1766055768172" duration="25000" />
+      <workItem from="1766064055047" duration="8000" />
+      <workItem from="1766064508622" duration="568000" />
+      <workItem from="1766065266015" duration="498000" />
+      <workItem from="1766065799353" duration="2237000" />
+      <workItem from="1766068077207" duration="127000" />
+      <workItem from="1766068212292" duration="913000" />
+      <workItem from="1766069171165" duration="946000" />
+      <workItem from="1766070664049" duration="77000" />
+      <workItem from="1766070750656" duration="21000" />
+      <workItem from="1766078316826" duration="1737000" />
+      <workItem from="1766084827122" duration="792000" />
+      <workItem from="1766212404958" duration="2395000" />
+      <workItem from="1766216318001" duration="332000" />
+      <workItem from="1766217001047" duration="4406000" />
+      <workItem from="1766221859510" duration="2954000" />
+      <workItem from="1766232741004" duration="1918000" />
+      <workItem from="1766234942391" duration="39000" />
+      <workItem from="1766260712425" duration="1666000" />
+      <workItem from="1766263142635" duration="6509000" />
+      <workItem from="1766311628588" duration="721000" />
+      <workItem from="1766337513129" duration="2271000" />
+      <workItem from="1766339826262" duration="3520000" />
+      <workItem from="1766391354026" duration="3470000" />
+      <workItem from="1766395525622" duration="45000" />
+      <workItem from="1766397708890" duration="39000" />
+      <workItem from="1766397759192" duration="601000" />
+      <workItem from="1766400749472" duration="409000" />
+      <workItem from="1766513506586" duration="6421000" />
+      <workItem from="1766521807367" duration="945000" />
+      <workItem from="1766523606055" duration="287000" />
+      <workItem from="1766574805293" duration="595000" />
+      <workItem from="1766577711249" duration="850000" />
+      <workItem from="1766579059065" duration="560000" />
+      <workItem from="1766579635912" duration="2115000" />
+      <workItem from="1766583195150" duration="1178000" />
+      <workItem from="1766584400914" duration="971000" />
+      <workItem from="1766593905158" duration="173000" />
+      <workItem from="1766594110952" duration="3139000" />
+      <workItem from="1766598755879" duration="96000" />
+      <workItem from="1766599133552" duration="1402000" />
+      <workItem from="1766600838563" duration="452000" />
+      <workItem from="1766601455299" duration="19000" />
+      <workItem from="1766601532711" duration="309000" />
+      <workItem from="1767458148695" duration="6815000" />
+      <workItem from="1767502268324" duration="1936000" />
+      <workItem from="1767932402377" duration="5711000" />
+      <workItem from="1767939356950" duration="2150000" />
+      <workItem from="1768125104288" duration="674000" />
+      <workItem from="1768131780614" duration="64000" />
+      <workItem from="1768141501807" duration="1169000" />
+      <workItem from="1768142710310" duration="1168000" />
+      <workItem from="1768144058249" duration="47000" />
+      <workItem from="1768144411119" duration="193000" />
+      <workItem from="1768755088565" duration="75000" />
+      <workItem from="1768997762401" duration="789000" />
+      <workItem from="1768998669341" duration="27192000" />
+      <workItem from="1769071410283" duration="704000" />
+      <workItem from="1769072465954" duration="6000" />
+      <workItem from="1769072629263" duration="3306000" />
+      <workItem from="1769077895444" duration="1233000" />
+      <workItem from="1769079741702" duration="2049000" />
+      <workItem from="1769085922077" duration="193000" />
+      <workItem from="1769090145049" duration="3580000" />
+      <workItem from="1769095264731" duration="931000" />
+    </task>
+    <task id="LOCAL-00012" summary="refactor command execution logic; enhance transaction handling and add import functionality with rollback support">
+      <option name="closed" value="true" />
+      <created>1765717130890</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1765717130890</updated>
+    </task>
+    <task id="LOCAL-00013" summary="refactor command handling; introduce CommandType enum and update command execution logic">
+      <option name="closed" value="true" />
+      <created>1765724073989</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1765724073989</updated>
+    </task>
+    <task id="LOCAL-00014" summary="refactor command handling; introduce CommandType enum and update command execution logic">
+      <option name="closed" value="true" />
+      <created>1765724352184</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1765724352184</updated>
+    </task>
+    <task id="LOCAL-00015" summary="refactor data handling; update ID types to Long and implement RandomAccessManager for efficient record management">
+      <option name="closed" value="true" />
+      <created>1765819799332</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1765819799332</updated>
+    </task>
+    <task id="LOCAL-00016" summary="add ConsoleUI for improved user interaction; refactor ExecutionEngine to utilize ConsoleUI for command feedback and display">
+      <option name="closed" value="true" />
+      <created>1766046787442</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1766046787442</updated>
+    </task>
+    <task id="LOCAL-00017" summary="add initial network handling classes; introduce ClinetHandler, NetworkManger, and message types for request/response management">
+      <option name="closed" value="true" />
+      <created>1766048094780</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1766048094780</updated>
+    </task>
+    <task id="LOCAL-00018" summary="implement Serializable interface in Request and Response classes; add constructors and getter methods for message handling">
+      <option name="closed" value="true" />
+      <created>1766048373539</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1766048373539</updated>
+    </task>
+    <task id="LOCAL-00019" summary="implement Serializable interface in Request and Response classes; add constructors and getter methods for message handling">
+      <option name="closed" value="true" />
+      <created>1766048411831</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1766048411831</updated>
+    </task>
+    <task id="LOCAL-00020" summary="add client classes and server handling; implement UniDBClient and UniDBServer with network communication">
+      <option name="closed" value="true" />
+      <created>1766052780492</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1766052780492</updated>
+    </task>
+    <task id="LOCAL-00021" summary="add client classes and server handling; implement UniDBClient and UniDBServer with network communication">
+      <option name="closed" value="true" />
+      <created>1766053801012</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1766053801012</updated>
+    </task>
+    <task id="LOCAL-00022" summary="update data.csv; add new entries for Amir, Reza, and Moahmmad">
+      <option name="closed" value="true" />
+      <created>1766054858571</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1766054858571</updated>
+    </task>
+    <task id="LOCAL-00023" summary="refactor ConsoleUI methods to return formatted strings; fix typo in MessageType enum; implement Serializable in Student class; add UniDBClient and NetworkManager classes for network handling">
+      <option name="closed" value="true" />
+      <created>1766055233359</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1766055233359</updated>
+    </task>
+    <task id="LOCAL-00024" summary="delete file">
+      <option name="closed" value="true" />
+      <created>1766055746893</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1766055746893</updated>
+    </task>
+    <task id="LOCAL-00025" summary="update server configuration; add ServerConfig class with constants and socket creation, refactor UniDBServer to use it, update .gitignore and data files">
+      <option name="closed" value="true" />
+      <created>1766065578640</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1766065578640</updated>
+    </task>
+    <task id="LOCAL-00026" summary="add file chooser import functionality; update import command to support interactive CSV selection, update server config and student records">
+      <option name="closed" value="true" />
+      <created>1766070764777</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1766070764777</updated>
+    </task>
+    <task id="LOCAL-00027" summary="add update functionality; implement update command parsing and execution, extend transaction support, update data and student records">
+      <option name="closed" value="true" />
+      <created>1766221886288</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1766221886288</updated>
+    </task>
+    <task id="LOCAL-00028" summary="add the authenticator option for the app">
+      <option name="closed" value="true" />
+      <created>1766267350273</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1766267350273</updated>
+    </task>
+    <task id="LOCAL-00029" summary="add the authenticator option for the app">
+      <option name="closed" value="true" />
+      <created>1766269861123</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1766269861123</updated>
+    </task>
+    <task id="LOCAL-00030" summary="add update and deleteAll commands; enhance filtering and update logic; refactor command execution for improved transaction and batch support">
+      <option name="closed" value="true" />
+      <created>1766339310499</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1766339310499</updated>
+    </task>
+    <task id="LOCAL-00031" summary="refactor ConsoleUI for string-based output; implement update in LinkedListCollection; update StorageManager to support update; add count to TransactionStack; clean up ExecutionEngine and related handlers">
+      <option name="closed" value="true" />
+      <created>1766340249778</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1766340249778</updated>
+    </task>
+    <task id="LOCAL-00032" summary="remove unused RandomAccessManager references and legacy code from StorageManager and Student">
+      <option name="closed" value="true" />
+      <created>1766340326316</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1766340326316</updated>
+    </task>
+    <task id="LOCAL-00033" summary="remove unused RandomAccessManager references and legacy code from StorageManager and Student">
+      <option name="closed" value="true" />
+      <created>1766340368556</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1766340368556</updated>
+    </task>
+    <task id="LOCAL-00034" summary="update sample data in data.csv; improve file writing with truncate option; ensure all students loaded at startup; clean up StorageManager and optimize deleteAll handling">
+      <option name="closed" value="true" />
+      <created>1766341978251</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1766341978251</updated>
+    </task>
+    <task id="LOCAL-00035" summary="implement UpdateCommand for direct student updates; enable handleUpdateDirect in ExecutionEngine">
+      <option name="closed" value="true" />
+      <created>1766342298492</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1766342298492</updated>
+    </task>
+    <task id="LOCAL-00036" summary="remove commented-out legacy importData method from StorageManager">
+      <option name="closed" value="true" />
+      <created>1766342352345</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1766342352345</updated>
+    </task>
+    <task id="LOCAL-00037" summary="add delete all functionality; implement deleteAll command parsing and execution, update storage and random access support, update data files">
+      <option name="closed" value="true" />
+      <created>1766343377662</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1766343377662</updated>
+    </task>
+    <task id="LOCAL-00038" summary="improve batch insert and upsert logic; update StorageManager to handle existing records with update, fix findByID conversion, adjust batch command generation, update student records data file, and fix batch execution output formatting">
+      <option name="closed" value="true" />
+      <created>1766395566430</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1766395566430</updated>
+    </task>
+    <task id="LOCAL-00039" summary="remove unused imports from StorageManager">
+      <option name="closed" value="true" />
+      <created>1766397822974</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1766397822974</updated>
+    </task>
+    <task id="LOCAL-00040" summary="remove unused imports from StorageManager">
+      <option name="closed" value="true" />
+      <created>1766399707823</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1766399707824</updated>
+    </task>
+    <task id="LOCAL-00041" summary="add Benchmark class for measuring insert, delete, and filter performance on student records">
+      <option name="closed" value="true" />
+      <created>1766515403401</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1766515403401</updated>
+    </task>
+    <task id="LOCAL-00042" summary="add benchmarking utility; implement methods for insert, delete, and filter performance testing on student records">
+      <option name="closed" value="true" />
+      <created>1766515530369</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL-00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1766515530369</updated>
+    </task>
+    <task id="LOCAL-00043" summary="add benchmarking utility; implement methods for insert, delete, and filter performance testing on student records">
+      <option name="closed" value="true" />
+      <created>1766516182338</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1766516182338</updated>
+    </task>
+    <task id="LOCAL-00044" summary="update student generation in Benchmark; use Random for name and GPA selection, round GPA to two decimals">
+      <option name="closed" value="true" />
+      <created>1766516672433</created>
+      <option name="number" value="00044" />
+      <option name="presentableId" value="LOCAL-00044" />
+      <option name="project" value="LOCAL" />
+      <updated>1766516672433</updated>
+    </task>
+    <task id="LOCAL-00045" summary="refine student GPA generation in Benchmark; use Random and round to two decimals">
+      <option name="closed" value="true" />
+      <created>1766517855150</created>
+      <option name="number" value="00045" />
+      <option name="presentableId" value="LOCAL-00045" />
+      <option name="project" value="LOCAL" />
+      <updated>1766517855150</updated>
+    </task>
+    <task id="LOCAL-00046" summary="add benchmark files">
+      <option name="closed" value="true" />
+      <created>1766517877164</created>
+      <option name="number" value="00046" />
+      <option name="presentableId" value="LOCAL-00046" />
+      <option name="project" value="LOCAL" />
+      <updated>1766517877164</updated>
+    </task>
+    <task id="LOCAL-00047" summary="add benchmark files">
+      <option name="closed" value="true" />
+      <created>1766517928079</created>
+      <option name="number" value="00047" />
+      <option name="presentableId" value="LOCAL-00047" />
+      <option name="project" value="LOCAL" />
+      <updated>1766517928079</updated>
+    </task>
+    <task id="LOCAL-00048" summary="update benchmark output to display timings in microseconds instead of milliseconds">
+      <option name="closed" value="true" />
+      <created>1766521861933</created>
+      <option name="number" value="00048" />
+      <option name="presentableId" value="LOCAL-00048" />
+      <option name="project" value="LOCAL" />
+      <updated>1766521861933</updated>
+    </task>
+    <task id="LOCAL-00049" summary="add benchmark pdf">
+      <option name="closed" value="true" />
+      <created>1766521880505</created>
+      <option name="number" value="00049" />
+      <option name="presentableId" value="LOCAL-00049" />
+      <option name="project" value="LOCAL" />
+      <updated>1766521880505</updated>
+    </task>
+    <task id="LOCAL-00050" summary="add benchmark pdf">
+      <option name="closed" value="true" />
+      <created>1766521913452</created>
+      <option name="number" value="00050" />
+      <option name="presentableId" value="LOCAL-00050" />
+      <option name="project" value="LOCAL" />
+      <updated>1766521913452</updated>
+    </task>
+    <task id="LOCAL-00051" summary="refactor QueryParser to simplify query parsing and error handling">
+      <option name="closed" value="true" />
+      <created>1766583461139</created>
+      <option name="number" value="00051" />
+      <option name="presentableId" value="LOCAL-00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1766583461139</updated>
+    </task>
+    <task id="LOCAL-00052" summary="replace System.err with ui.printlnError for client disconnect messages">
+      <option name="closed" value="true" />
+      <created>1766583471260</created>
+      <option name="number" value="00052" />
+      <option name="presentableId" value="LOCAL-00052" />
+      <option name="project" value="LOCAL" />
+      <updated>1766583471260</updated>
+    </task>
+    <task id="LOCAL-00053" summary="refactor network UI to use ConsoleUI formatting methods and standardize output handling">
+      <option name="closed" value="true" />
+      <created>1766597277278</created>
+      <option name="number" value="00053" />
+      <option name="presentableId" value="LOCAL-00053" />
+      <option name="project" value="LOCAL" />
+      <updated>1766597277279</updated>
+    </task>
+    <task id="LOCAL-00054" summary="update file handling to use project root paths and CSV format, add sample data and usage instructions">
+      <option name="closed" value="true" />
+      <created>1766601830513</created>
+      <option name="number" value="00054" />
+      <option name="presentableId" value="LOCAL-00054" />
+      <option name="project" value="LOCAL" />
+      <updated>1766601830514</updated>
+    </task>
+    <task id="LOCAL-00055" summary="update file handling to use project root paths and CSV format, add sample data and usage instructions">
+      <option name="closed" value="true" />
+      <created>1766601841686</created>
+      <option name="number" value="00055" />
+      <option name="presentableId" value="LOCAL-00055" />
+      <option name="project" value="LOCAL" />
+      <updated>1766601841686</updated>
+    </task>
+    <task id="LOCAL-00056" summary="delete unecessery lines">
+      <option name="closed" value="true" />
+      <created>1767470806616</created>
+      <option name="number" value="00056" />
+      <option name="presentableId" value="LOCAL-00056" />
+      <option name="project" value="LOCAL" />
+      <updated>1767470806617</updated>
+    </task>
+    <task id="LOCAL-00057" summary="add project structure for the second faze of the DB project">
+      <option name="closed" value="true" />
+      <created>1767939119365</created>
+      <option name="number" value="00057" />
+      <option name="presentableId" value="LOCAL-00057" />
+      <option name="project" value="LOCAL" />
+      <updated>1767939119365</updated>
+    </task>
+    <task id="LOCAL-00058" summary="complete data structure classes">
+      <option name="closed" value="true" />
+      <created>1768144599400</created>
+      <option name="number" value="00058" />
+      <option name="presentableId" value="LOCAL-00058" />
+      <option name="project" value="LOCAL" />
+      <updated>1768144599400</updated>
+    </task>
+    <task id="LOCAL-00059" summary="complete the indexes and index optimizer and make the program can auto detect to use the index">
+      <option name="closed" value="true" />
+      <created>1769086057379</created>
+      <option name="number" value="00059" />
+      <option name="presentableId" value="LOCAL-00059" />
+      <option name="project" value="LOCAL" />
+      <updated>1769086057379</updated>
+    </task>
+    <task id="LOCAL-00060" summary="Update data import functionality and modify sample data">
+      <option name="closed" value="true" />
+      <created>1769092063672</created>
+      <option name="number" value="00060" />
+      <option name="presentableId" value="LOCAL-00060" />
+      <option name="project" value="LOCAL" />
+      <updated>1769092063673</updated>
+    </task>
+    <option name="localTasksCounter" value="61" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="main" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="add update and deleteAll commands; enhance filtering and update logic; refactor command execution for improved transaction and batch support" />
+    <MESSAGE value="refactor ConsoleUI for string-based output; implement update in LinkedListCollection; update StorageManager to support update; add count to TransactionStack; clean up ExecutionEngine and related handlers" />
+    <MESSAGE value="remove unused RandomAccessManager references and legacy code from StorageManager and Student" />
+    <MESSAGE value="update sample data in data.csv; improve file writing with truncate option; ensure all students loaded at startup; clean up StorageManager and optimize deleteAll handling" />
+    <MESSAGE value="implement UpdateCommand for direct student updates; enable handleUpdateDirect in ExecutionEngine" />
+    <MESSAGE value="remove commented-out legacy importData method from StorageManager" />
+    <MESSAGE value="add delete all functionality; implement deleteAll command parsing and execution, update storage and random access support, update data files" />
+    <MESSAGE value="improve batch insert and upsert logic; update StorageManager to handle existing records with update, fix findByID conversion, adjust batch command generation, update student records data file, and fix batch execution output formatting" />
+    <MESSAGE value="remove unused imports from StorageManager" />
+    <MESSAGE value="add Benchmark class for measuring insert, delete, and filter performance on student records" />
+    <MESSAGE value="add benchmarking utility; implement methods for insert, delete, and filter performance testing on student records" />
+    <MESSAGE value="update student generation in Benchmark; use Random for name and GPA selection, round GPA to two decimals" />
+    <MESSAGE value="refine student GPA generation in Benchmark; use Random and round to two decimals" />
+    <MESSAGE value="add benchmark files" />
+    <MESSAGE value="update benchmark output to display timings in microseconds instead of milliseconds" />
+    <MESSAGE value="add benchmark pdf" />
+    <MESSAGE value="refactor QueryParser to simplify query parsing and error handling" />
+    <MESSAGE value="replace System.err with ui.printlnError for client disconnect messages" />
+    <MESSAGE value="refactor network UI to use ConsoleUI formatting methods and standardize output handling" />
+    <MESSAGE value="update file handling to use project root paths and CSV format, add sample data and usage instructions" />
+    <MESSAGE value="delete unecessery lines" />
+    <MESSAGE value="add project structure for the second faze of the DB project" />
+    <MESSAGE value="complete data structure classes" />
+    <MESSAGE value="complete the indexes and index optimizer and make the program can auto detect to use the index" />
+    <MESSAGE value="Update data import functionality and modify sample data" />
+    <option name="LAST_COMMIT_MESSAGE" value="Update data import functionality and modify sample data" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-method">
+          <url>file://$PROJECT_DIR$/src/main/java/DataStructeure/BST.java</url>
+          <line>39</line>
+          <properties class="DataStructeure.BST">
+            <option name="EMULATED" value="true" />
+            <option name="WATCH_EXIT" value="false" />
+          </properties>
+          <option name="timeStamp" value="48" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/Engine/ExecutionEngine.java</url>
+          <line>355</line>
+          <option name="timeStamp" value="49" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+  <component name="github-copilot-workspace">
+    <instructionFileLocations>
+      <option value=".github/instructions" />
+    </instructionFileLocations>
+    <promptFileLocations>
+      <option value=".github/prompts" />
+    </promptFileLocations>
+  </component>
+</project>
