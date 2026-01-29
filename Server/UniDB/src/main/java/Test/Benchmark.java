@@ -27,14 +27,14 @@ public class Benchmark {
         return studentsCache;
     }
 
-    public long insertBenchmark(int recordCount) {
+    public List<Student> insertBenchmark(int recordCount) {
         List<Student> students = generateStudents(recordCount);
         long startTime = System.nanoTime();
         for (Student student : students) {
             Engine.Commands.InsertOneCommand.execute(student);
         }
         long endTime = System.nanoTime();
-        return endTime - startTime;
+        return students;
     }
 
     public Long deleteFirstBenchmark(int recordDeleteCount) {
@@ -68,7 +68,7 @@ public class Benchmark {
 
     public static void main(String[] args){
         Benchmark benchmark = new Benchmark();
-        System.out.println("Inserted " + 50000 + " records in " + benchmark.insertBenchmark(50000) / 1_000 + " µs");
+//        System.out.println("Inserted " + 50000 + " records in " + benchmark.insertBenchmark(50000) / 1_000 + " µs");
         System.out.println("Deleted " + 500 + " records from the first in " + benchmark.deleteFirstBenchmark(500) / 1_000 + " µs");
         System.out.println("Deleted " + 500 + " records from the last in " + benchmark.deleteLastBenchmark(500) / 1_000 + " µs");
         System.out.println("Filtered " + 500 + " records in " + benchmark.filterBenchmark(500) / 1_000 + " µs");
