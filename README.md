@@ -69,4 +69,4 @@ AmirDB shows a lot of good things:
 
 ## 👨‍🎓 Author
 
-Made by **Amir** [https://github.com/ahk1384]💙
+Made by [Amir](https://github.com/ahk1384) 💙
